@@ -1,0 +1,10 @@
+[
+  {
+    "action": "adjust_threshold",
+    "target": "block_threshold",
+    "value": 0.75,
+    "confidence": 0.64,
+    "reason": "Agent tightened block threshold to 0.75",
+    "approved": null
+  }
+]
