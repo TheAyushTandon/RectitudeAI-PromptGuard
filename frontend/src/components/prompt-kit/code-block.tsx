@@ -2,7 +2,7 @@
 
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils-lib/utils";
 
 // Make sure to match CSS themes or just basic syntax highlighting
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";

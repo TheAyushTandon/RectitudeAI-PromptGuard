@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { LayoutDashboard, ShieldCheck, User, Mail, Shield, Key, History } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils-lib/utils";
 import { motion } from "framer-motion";
 import { BGPattern } from "@/components/ui/bg-pattern";
 

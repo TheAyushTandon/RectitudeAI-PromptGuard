@@ -1,7 +1,7 @@
 "use client"
 
 import { TextShimmer } from "@/components/ui/text-shimmer"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils-lib/utils"
 import { ChevronRight } from "lucide-react"
 import { motion, AnimatePresence } from "motion/react"
 

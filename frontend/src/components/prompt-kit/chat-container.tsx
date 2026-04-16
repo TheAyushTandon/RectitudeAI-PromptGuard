@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils-lib/utils"
 import { StickToBottom } from "use-stick-to-bottom"
 
 export type ChatContainerRootProps = {

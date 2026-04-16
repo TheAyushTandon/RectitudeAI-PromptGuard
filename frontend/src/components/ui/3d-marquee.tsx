@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils-lib/utils";
 
 const LogoCard = () => (
     <div className="flex items-center gap-6 px-12 py-8 rounded-2xl bg-[#2e2e2e] border border-[#DC2626]/40 shadow-[0_0_30px_rgba(0,0,0,0.5)] min-w-[450px] group transition-all duration-300 hover:border-[#DC2626]/80 hover:bg-[#363636] hover:shadow-[0_0_40px_rgba(220,38,38,0.2)]">

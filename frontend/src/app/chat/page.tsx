@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils-lib/utils";
 import { FallingPattern } from "@/components/ui/falling-pattern";
 import { PromptBox } from "@/components/ui/chatgpt-prompt-input";
 import {

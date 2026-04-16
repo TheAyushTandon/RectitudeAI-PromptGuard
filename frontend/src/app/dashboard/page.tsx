@@ -1,7 +1,7 @@
 /* eslint-disable */
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils-lib/utils";
 
 import React, { useState, useEffect } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
