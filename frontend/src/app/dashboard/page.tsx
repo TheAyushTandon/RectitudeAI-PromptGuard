@@ -24,6 +24,9 @@ export default function DashboardPage() {
   const [settings, setSettings] = useState(null);
   const [isConnected, setIsConnected] = useState(true);
 
+  // Production-ready API Base
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
   const links = [
     { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard className="h-5 w-5 text-white/50" /> },
     { label: "Chat", href: "/chat", icon: <ShieldCheck className="h-5 w-5 text-white/50" /> },
@@ -34,9 +37,9 @@ export default function DashboardPage() {
     const fetchData = async () => {
       try {
         const [statsRes, logsRes, settingsRes] = await Promise.all([
-          fetch("http://127.0.0.1:8000/v1/dashboard/stats"),
-          fetch("http://127.0.0.1:8000/v1/dashboard/logs?limit=10"),
-          fetch("http://127.0.0.1:8000/v1/dashboard/settings"),
+          fetch(`${API_BASE}/v1/dashboard/stats`),
+          fetch(`${API_BASE}/v1/dashboard/logs?limit=10`),
+          fetch(`${API_BASE}/v1/dashboard/settings`),
         ]);
 
         if (statsRes.ok && logsRes.ok && settingsRes.ok) {
@@ -121,7 +124,7 @@ export default function DashboardPage() {
               <div className="flex items-center gap-6 bg-white/[0.03] border border-white/5 backdrop-blur-md px-5 py-3 rounded-2xl">
                  <div className="flex flex-col">
                     <span className="text-[10px] text-white/30 uppercase font-bold tracking-widest">Network Status</span>
-                    <span className="text-xs text-white/70 font-mono">127.0.0.1:8000</span>
+                    <span className="text-xs text-white/70 font-mono">{API_BASE.replace("http://", "").replace("https://", "")}</span>
                  </div>
                  <div className="h-8 w-px bg-white/10" />
                  <div className="flex items-center gap-3">

@@ -9,6 +9,9 @@ export default function DynamicThresholds({ settings }: { settings: any }) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
+  // Production-ready API Base
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
   useEffect(() => {
     if (settings && !isUpdating) {
       setLocalSettings(settings);
@@ -27,7 +30,7 @@ export default function DynamicThresholds({ settings }: { settings: any }) {
     setLocalSettings(newSettings);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/v1/dashboard/settings", {
+      const res = await fetch(`${API_BASE}/v1/dashboard/settings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newSettings),

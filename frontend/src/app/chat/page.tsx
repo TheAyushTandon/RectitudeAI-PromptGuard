@@ -32,6 +32,10 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("chat");
+
+  // Production-ready API Base
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
   const [currentModel, setCurrentModel] = useState<string>(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("rectitude_selected_model") || "Select Model";
@@ -63,7 +67,7 @@ export default function ChatPage() {
 
   const fetchModels = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/v1/models");
+      const response = await fetch(`${API_BASE}/v1/models`);
       const data = await response.json();
       if (data.models && data.models.length > 0) {
         setAvailableModels(data.models);
@@ -84,7 +88,7 @@ export default function ChatPage() {
 
   const fetchSessions = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/v1/sessions");
+      const response = await fetch(`${API_BASE}/v1/sessions`);
       const data = await response.json();
       if (data.sessions) {
         setSessions(data.sessions);
@@ -106,7 +110,7 @@ export default function ChatPage() {
   const deleteSession = async (e: React.MouseEvent, sid: string) => {
     e.stopPropagation(); // Don't trigger loadSession
     try {
-      const response = await fetch(`http://127.0.0.1:8000/v1/history/${sid}`, {
+      const response = await fetch(`${API_BASE}/v1/history/${sid}`, {
         method: "DELETE"
       });
       if (response.ok) {
@@ -125,7 +129,7 @@ export default function ChatPage() {
     if (isLoading) return;
     setIsLoading(true);
     try {
-      const response = await fetch(`http://127.0.0.1:8000/v1/history/${sid}`);
+      const response = await fetch(`${API_BASE}/v1/history/${sid}`);
       const data = await response.json();
       if (data.messages) {
         // Map backend history to frontend message format
@@ -395,7 +399,7 @@ export default function ChatPage() {
 
       // Backend Call: AI Response
       try {
-        const response = await fetch("http://127.0.0.1:8000/v1/agent/chat", {
+        const response = await fetch(`${API_BASE}/v1/agent/chat`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
