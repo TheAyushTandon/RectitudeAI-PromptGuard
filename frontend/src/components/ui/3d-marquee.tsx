@@ -13,9 +13,11 @@ const LogoCard = () => (
 export const ThreeDMarquee = ({
   className,
   count = 32, // Increased density for the "wall" effect
+  images, 
 }: {
   className?: string;
   count?: number;
+  images?: string[];
 }) => {
   // We'll create 4 chunks of LogoCards
   const chunks = Array.from({ length: 4 }, () => 

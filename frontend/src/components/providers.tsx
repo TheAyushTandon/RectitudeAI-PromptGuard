@@ -59,7 +59,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             exit={{ opacity: 0, scale: 1.005 }}
             transition={{
               duration: 0.4,
-              ease: [0.23, 1, 0.32, 1], // Fluid cubic-bezier
+              ease: [0.23, 1, 0.32, 1] as any, // Fluid cubic-bezier
             }}
             className="min-h-screen flex flex-col"
           >

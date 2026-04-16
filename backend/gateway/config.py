@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     jwt_expiration_minutes: int = 60
 
     # LLM
-    llm_provider: str = "ollama"  # supports: openai, anthropic, ollama, mock
+    llm_provider: str = "groq"  # supports: openai, anthropic, ollama, mock, groq
     openai_api_key: str = ""
     anthropic_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"

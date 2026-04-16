@@ -107,11 +107,9 @@ const config: Config = {
           to: { opacity: "1" },
         },
       },
-    },
-  },
-  extend: {
-    boxShadow: {
-      'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+      boxShadow: {
+        'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+      },
     },
   },
   plugins: [],

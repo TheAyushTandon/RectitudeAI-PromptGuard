@@ -7,10 +7,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ExternalLink, ChevronRight, Check, X, Plug2, Building2, Bot, Diamond } from "lucide-react";
-import { LordIcon } from "@/components/ui/lord-icon";
-import { Navbar, NavBody, NavItems, NavbarLogo, NavbarButton, MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle } from "@/components/ui/resizable-navbar";
-import { ThreeDMarquee } from "@/components/ui/3d-marquee";
-import { FooterSection } from "@/components/ui/footer-section";
+import { LordIcon } from "../components/ui/lord-icon";
+import { Navbar, NavBody, NavItems, NavbarLogo, NavbarButton, MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle } from "../components/ui/resizable-navbar";
+import { ThreeDMarquee } from "../components/ui/3d-marquee";
+import { FooterSection } from "../components/ui/footer-section";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -62,7 +62,7 @@ const itemVariants = {
     filter: "blur(0px)",
     transition: {
       duration: 1.2,
-      ease: [0.16, 1, 0.3, 1],
+      ease: [0.16, 1, 0.3, 1] as any,
     },
   },
 };
@@ -354,7 +354,7 @@ function ComparisonAndMarqueeSection() {
           className="text-center mb-20 md:mb-32 flex flex-col items-center w-full relative z-30"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as any }}
         >
           <div style={{ marginBottom: "28px" }} className="text-[#FF4D4D] font-mono text-xs tracking-[0.4em] uppercase">
             Comparison
@@ -492,7 +492,7 @@ function HowItWorksSection() {
           className="text-center mb-24 relative z-30"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as any }}
         >
           <p style={{ marginBottom: "28px" }} className="text-sm font-mono text-[#DC2626] tracking-widest uppercase">Flow</p>
           <h2 style={{ marginBottom: "32px" }} className="font-display text-5xl md:text-[100px] leading-[0.85] font-bold text-[#FFFFFF]">
@@ -507,7 +507,7 @@ function HowItWorksSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               whileHover={{ scale: 1.05, zIndex: 50 }}
-              transition={{ duration: 1.0, delay: i * 0.2, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 1.0, delay: i * 0.2, ease: [0.16, 1, 0.3, 1] as any }}
               className="relative min-w-0 cursor-pointer z-30"
             >
               <div className="uiverse-card h-full">
@@ -581,7 +581,7 @@ function UseCasesSection() {
           className="text-center mb-24 relative z-30"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as any }}
         >
           <p style={{ marginBottom: "28px" }} className="text-sm font-mono text-[#DC2626] tracking-widest uppercase">Use Cases</p>
           <h2 style={{ marginBottom: "32px" }} className="font-display text-5xl md:text-[90px] leading-[1] font-bold text-[#FFFFFF]">
@@ -596,7 +596,7 @@ function UseCasesSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               whileHover={{ scale: 1.05, zIndex: 50 }}
-              transition={{ duration: 1.0, delay: i * 0.2, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 1.0, delay: i * 0.2, ease: [0.16, 1, 0.3, 1] as any }}
               className="group relative min-w-0 cursor-pointer z-30"
             >
               <div className="uiverse-card h-full">

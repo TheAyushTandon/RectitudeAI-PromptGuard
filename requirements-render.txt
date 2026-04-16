@@ -1,0 +1,28 @@
+# ── Core Framework ────────────────────────────────────────────────────────────
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.7.4
+pydantic-settings==2.3.0
+
+# ── Authentication & Security ─────────────────────────────────────────────────
+python-jose[cryptography]==3.3.0
+passlib[argon2]==1.7.4
+argon2-cffi>=21.3.0
+python-multipart==0.0.6
+
+# ── LLM Clients ───────────────────────────────────────────────────────────────
+# httpx is used for Groq and Ollama, already in core
+
+# ── HTTP & Async ──────────────────────────────────────────────────────────────
+httpx==0.26.0
+aiohttp==3.9.1
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+python-dotenv==1.0.0
+
+# -- Agent Orchestration --
+langgraph>=0.2.0
+langchain-core>=0.3.0
+
+# Note: Tier-2 ML Classifiers (transformers/torch) are excluded to stay within Render Free Tier (512MB RAM).
+# The system will automatically fall back to Tier-1 (Regex) and Tier-3 (Capability Tokens) + Groq.

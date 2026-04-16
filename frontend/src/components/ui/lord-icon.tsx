@@ -37,6 +37,7 @@ export const LordIcon = ({
 
   return (
     <div className={className} style={{ width: size, height: size }}>
+      {/* @ts-ignore */}
       <lord-icon
         ref={iconRef}
         src={src}
