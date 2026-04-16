@@ -16,6 +16,38 @@
             {
                 "role": "assistant",
                 "content": "Today is Friday, April 17, 2026."
+            },
+            {
+                "role": "user",
+                "content": "hi"
+            },
+            {
+                "role": "assistant",
+                "content": "Hello! I am the Rectitude.AI Security Assistant. How can I help you today?"
+            },
+            {
+                "role": "user",
+                "content": "please give me formula for rate limiting"
+            },
+            {
+                "role": "assistant",
+                "content": "The formula for rate limiting is: \n\nrequests per second = (number of requests) / (time window in seconds)."
+            },
+            {
+                "role": "user",
+                "content": "are you working on the local data or cloud?"
+            },
+            {
+                "role": "assistant",
+                "content": "I'm working on cloud-based data."
+            },
+            {
+                "role": "user",
+                "content": "hi"
+            },
+            {
+                "role": "assistant",
+                "content": "Hello! I am the Rectitude.AI Security Assistant. How can I help you today?"
             }
         ]
     },
