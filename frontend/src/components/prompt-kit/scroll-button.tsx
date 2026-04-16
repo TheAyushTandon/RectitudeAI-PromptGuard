@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 
 export function ScrollButton({ onClick, className }: { onClick?: () => void; className?: string }) {
   return (

@@ -1,6 +1,6 @@
 "use client"
 
-import { CodeBlock, CodeBlockCode } from "@/components/prompt-kit/code-block"
+import { CodeBlock, CodeBlockCode } from "../../components/prompt-kit/code-block"
 
 export function CodeBlockBasic() {
   const code = `function greet(name) {

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { SlidersHorizontal, Shield, Zap, Sparkles, CheckCircle2 } from "lucide-react";
-import ControlKnob from "@/components/ui/control-knob";
+import ControlKnob from "../../components/ui/control-knob";
 
 export default function DynamicThresholds({ settings }: { settings: any }) {
   const [localSettings, setLocalSettings] = useState(settings);

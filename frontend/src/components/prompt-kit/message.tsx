@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 import { Markdown } from "./markdown";
 
 export function Message({ children, className }: { children: React.ReactNode; className?: string }) {

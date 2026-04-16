@@ -2,18 +2,18 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { cn } from "../../lib/utils";
-import { FallingPattern } from "@/components/ui/falling-pattern";
-import { PromptBox } from "@/components/ui/chatgpt-prompt-input";
+import { FallingPattern } from "../../components/ui/falling-pattern";
+import { PromptBox } from "../../components/ui/chatgpt-prompt-input";
 import {
   Message,
   MessageAvatar,
   MessageContent,
-} from "@/components/prompt-kit/message";
+} from "../../components/prompt-kit/message";
 
-import { LordIcon } from "@/components/ui/lord-icon";
-import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
+import { LordIcon } from "../../components/ui/lord-icon";
+import { Sidebar, SidebarBody, SidebarLink } from "../../components/ui/sidebar";
 import { motion, AnimatePresence } from "motion/react";
-import { ThinkingBar } from "@/components/prompt-kit/thinking-bar";
+import { ThinkingBar } from "../../components/prompt-kit/thinking-bar";
 import { 
   RefreshCw, 
   Database, 
