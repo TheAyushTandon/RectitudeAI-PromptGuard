@@ -19,9 +19,9 @@ import { BGPattern } from "../../components/ui/bg-pattern";
 
 export default function DashboardPage() {
   const [open, setOpen] = useState(false);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<Record<string, any> | null>(null);
   const [logs, setLogs] = useState<any[]>([]);
-  const [settings, setSettings] = useState<any>(null);
+  const [settings, setSettings] = useState<Record<string, any> | null>(null);
   const [isConnected, setIsConnected] = useState(true);
 
   // Production-ready API Base
