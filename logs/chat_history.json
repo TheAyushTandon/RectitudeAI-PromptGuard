@@ -1,0 +1,28 @@
+{
+    "history": {
+        "local_session": [
+            {
+                "role": "user",
+                "content": "who's the tallest person?"
+            },
+            {
+                "role": "assistant",
+                "content": "Robert Wadlow is recorded as the tallest person in history, standing at 8 ft 11.1 in."
+            },
+            {
+                "role": "user",
+                "content": "day and date?"
+            },
+            {
+                "role": "assistant",
+                "content": "Today is Friday, April 17, 2026."
+            }
+        ]
+    },
+    "metadata": {
+        "local_session": {
+            "title": "who's the tallest person?",
+            "created_at": "who's the tallest person?"
+        }
+    }
+}
