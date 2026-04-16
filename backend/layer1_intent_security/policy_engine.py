@@ -5,9 +5,9 @@ Thresholds and weights are read live from PolicyStore on every call,
 so RL-approved updates take effect immediately without a server restart.
 
 Signal weights (tunable via PolicyStore):
-  regex_prefilter : 0.40
+  regex_prefilter : 0.35
   injection_ml    : 0.35
-  perplexity      : 0.15
+  intent_ml       : 0.20
   behavioral_asi  : 0.10
 
 Decision thresholds (PolicyStore keys):
@@ -34,9 +34,9 @@ _policy_store = PolicyStore()
 
 # Default weights (can be overridden by PolicyStore in a future extension)
 _WEIGHTS = {
-    "regex_prefilter": 0.40,
+    "regex_prefilter": 0.35,
     "injection_ml":    0.35,
-    "perplexity":      0.15,
+    "intent_ml":       0.20,
     "behavioral_asi":  0.10,
 }
 
@@ -101,11 +101,13 @@ def apply_policies(
         }
 
         # Instant-block short-circuit
-        if d.decision == "block" and d.risk_score >= 1.0:
+        # If any single detector is very confident (>= 0.92), block immediately.
+        # This prevents ML signals from being diluted by "Allow" signals from other layers.
+        if d.decision == "block" and d.risk_score >= 0.92:
             return SecurityDecision(
                 decision="block",
-                risk_score=1.0,
-                reason=f"Instant block [{name}]: {d.reason}",
+                risk_score=d.risk_score,
+                reason=f"High-confidence block [{name}]: {d.reason}",
                 metadata={"fusion": metadata},
             )
 
@@ -132,8 +134,17 @@ def apply_policies(
                 fused_score = max(fused_score, escalate_threshold)
                 break
 
-    # Final decision
-    if fused_score >= block_threshold or block_reasons:
+    # Final decision — FIX: Previously, ANY detector with decision=="block" (even
+    # at a moderate prefilter score of 0.85) would add to block_reasons, causing
+    # the final fused decision to be "block" regardless of what the ML classifiers
+    # said. This meant the ML layer had zero corrective power against false positives.
+    #
+    # New logic: fused_score is authoritative. block_reasons is used for logging only.
+    # A prefilter "block" at 0.85 is already captured in the fused_score (weight=0.40),
+    # which will push the fused score close to or above block_threshold on its own
+    # for a genuine attack. For a false-positive (ML disagrees strongly), the fused
+    # score stays below threshold and ML corrections are respected.
+    if fused_score >= block_threshold:
         final_decision = "block"
     elif fused_score >= escalate_threshold:
         final_decision = "escalate"

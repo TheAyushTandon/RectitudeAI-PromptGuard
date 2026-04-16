@@ -21,10 +21,14 @@ class Settings(BaseSettings):
     jwt_expiration_minutes: int = 60
 
     # LLM
-    llm_provider: Literal["openai", "anthropic", "ollama"] = "ollama"
-    openai_api_key: Optional[str] = None
-    anthropic_api_key: Optional[str] = None
+    llm_provider: str = "ollama"  # supports: openai, anthropic, ollama, mock
+    openai_api_key: str = ""
+    anthropic_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"
+    ollama_model: str = "qwen2.5:7b"
+    groq_api_key: str = ""
+    groq_model: str = "llama-3.3-70b-versatile"
+    default_model: str = "gemma:2b"
 
     # Rate limiting
     rate_limit_requests: int = 100
@@ -57,6 +61,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = False
+        extra = "ignore"
 
 
 settings = Settings()

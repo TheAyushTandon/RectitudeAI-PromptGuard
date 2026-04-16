@@ -54,4 +54,4 @@ echo ""
 echo "📖 API Documentation: http://localhost:8000/docs"
 echo "🏥 Health Check: http://localhost:8000/health/"
 echo ""
-uvicorn app.main:app --reload --port 8000
+PYTHONPATH=. uvicorn backend.gateway.main:app --reload --port 8000

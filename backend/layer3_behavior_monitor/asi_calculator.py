@@ -233,15 +233,54 @@ class ASICalculator:
         )
 
     def get_risk_score(self, session_id: str) -> float:
-        """Returns inverted ASI as a risk score (0 = safe, 1 = high risk)."""
+        """
+        Returns inverted ASI as a risk score (0 = safe, 1 = high risk).
+
+        FIX: Previously called self.compute() which APPENDED a ghost entry to the
+        session history on every pre-flight check, causing double-counting of prompts
+        and artificially inflating the drift score.  Now we read the history read-only
+        and recompute scores in-place without persisting a new entry.
+        """
         history = _get_session(session_id)
-        if not history:
+        if not history or len(history) < 3:
             return 0.0
-        snap = self.compute(
-            prompt=history[-1]["prompt"],
-            session_id=session_id,
+
+        # Re-derive ASI from existing history without writing a new entry
+        prompts = [e["prompt"] for e in history]
+        tools   = [e["tool"] for e in history]
+        tokens  = [e["tokens"] for e in history]
+
+        sims = [
+            max(_cosine_sim_simple(prompts[i], prompts[i - 1]), 0.30)
+            for i in range(1, len(prompts))
+        ]
+        c_consistency = sum(sims) / len(sims) if sims else 1.0
+
+        unique_tools = set(t for t in tools if t)
+        if not unique_tools:
+            t_tool = 1.0
+        else:
+            first_half_tools = set(t for t in tools[:len(tools)//2] if t)
+            new_tools_late = unique_tools - first_half_tools
+            t_tool = max(0.0, 1.0 - len(new_tools_late) * 0.25)
+
+        cv = _coefficient_of_variation([float(t) for t in tokens if t > 0])
+        b_boundaries = max(0.0, 1.0 - min(cv, 1.0))
+        blocked_count = sum(1 for e in history if e.get("blocked"))
+        if blocked_count >= 2:
+            b_boundaries *= 0.6
+
+        flips = sum(1 for s in sims if s < 0.15)
+        ldfr = flips / max(len(sims), 1)
+
+        asi = (
+            0.35 * c_consistency
+            + 0.30 * t_tool
+            + 0.20 * b_boundaries
+            + 0.15 * (1.0 - ldfr)
         )
-        return round(1.0 - snap.asi, 4)
+        asi = round(max(0.0, min(1.0, asi)), 4)
+        return round(1.0 - asi, 4)
 
     def reset_session(self, session_id: str):
         """Clear session history (e.g. after a legitimate context reset)."""

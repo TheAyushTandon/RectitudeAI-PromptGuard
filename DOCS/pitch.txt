@@ -1,0 +1,78 @@
+================================================================================
+           RECTITUDE.AI — 6-MINUTE VIDEO PITCH SCRIPT
+           Format: Face-Cam (Frontend) | Two Speakers (3 Mins Each)
+================================================================================
+
+MEMBERS:
+1. Vartika Manish (Member 1: Strategic & High-Level Architecture)
+2. Ayush Tandon  (Member 2: Technical Deep Dive & System Integration)
+
+TOTAL DURATION: 06:00 Minutes (03:00 per member)
+
+================================================================================
+PART 1: VARTIKA MANISH — THE VISION & CORE ARCHITECTURE [00:00 – 03:00]
+================================================================================
+
+[00:00 – 00:30] THE HOOK & THE AI REALITY CHECK
+(Angle: Mid-shot, face-cam. Confident, direct)
+"Hi, I’m Vartika Manish. In the last 12 months, we’ve seen AI move from simple chat bots to autonomous agents—systems that can read your emails, move your money, and touch your production databases. 
+
+But here’s the scary part: Most of these agents have zero guardrails. According to JailbreakBench, over 80% of undefended models can be compromised. One prompt injection is all it takes to turn your customer-facing AI into a data exfiltration tool. This is why we built Rectitude.AI."
+
+[00:30 – 01:00] THE CONCEPT: THE 5-LAYER SECURITY SANDWICH
+"Rectitude.AI isn’t just a simple classifier—it’s a multi-layered security gateway. We call it our '5-Layer Security Sandwich.' It acts as a zero-trust firewall between your users and your intelligence.
+
+Before a prompt even reaches the LLM, we analyze intent. While the model processes, we verify capability. And before the response reaches the user, we redact sensitive data. It’s Defense-in-Depth for the generative era."
+
+[01:00 – 02:00] CORE DEFENSE: LAYERS 1 & 2
+"Let’s look at the first two lines of defense. 
+
+Layer 1 is Intent Security. We combine a high-speed regex pre-filter with a DeBERTa-v3 transformer classifier. We aren't just looking for keywords; we're analyzing the semantic intent of attacks like role-switching or persona hijacking.
+
+Layer 2 is where we truly differentiate: Cryptographic Integrity. Most systems trust the LLM's output. We don’t. We issue HMAC-signed capability tokens. Even if an agent is jailbroken, it physically cannot access a tool unless it has the cryptographic key. This shuts down tool-misuse at the protocol level."
+
+[02:00 – 02:45] BUSINESS IMPACT & PERFORMANCE
+"The empirical results are clear. Across 1,600 adversarial prompts, our system maintained a 95.4% accuracy rate. We’ve seen the Attack Success Rate drop from 80% to under 5%. 
+
+And the best part? Performance overhead is minimal. Our regex filter blocks obvious attacks in under 5 milliseconds. We’ve built this to run locally—ensuring your sensitive data never leaves your infrastructure."
+
+[02:45 – 03:00] THE TRANSITION
+"Rectitude.AI bridges the gap between AI capability and enterprise safety. But to understand how this handles behavioral drift and adapts autonomously, I’ll pass it over to Ayush for the technical deep dive."
+
+[VARTIKA: Wave/Exit]
+
+================================================================================
+PART 2: AYUSH TANDON — THE ENGINE & AGENT ORCHESTRATION [03:00 – 06:00]
+============================================================================
+
+[03:00 – 03:30] INTRO & THE TECHNICAL FOUNDATION
+(Angle: Mid-shot, face-cam. Expert, enthusiastic)
+"Thanks, Vartika. Hi, I’m Ayush Tandon. While Vartika focused on the 'What,' I want to show you the 'How'—the technical engine that makes Rectitude.AI adaptive and resilient. 
+
+We’ve built this entire platform using FastAPI, HuggingFace Transformers, and Reinforcement Learning. We don’t just block static attacks; we monitor live behavior."
+
+[03:30 – 04:30] ADAPTIVE LAYERS: L3, L4, & L5
+"This brings us to Layer 3: our proprietary Agent Stability Index, or ASI. In a multi-turn conversation, an attacker might spend 10 turns slowly steering an agent. We track semantic drift and consistency over time. If the ASI score drops below our threshold, the session is quarantined instantly.
+
+Layer 4 is our autonomous Red Teaming engine. We use a PPO reinforcement learning agent that continuously tries to bypass our own gateway. It finds weaknesses, evaluates them, and proposes policy updates—automatically. 
+
+And finally, Layer 5 is Output Mediation. Even if the input is clean, we scan the LLM's response for PII like SSNs or API keys and redact them in real-time. It’s zero-trust at every exit."
+
+[04:30 – 05:15] MULTI-AGENT ORCHESTRATION
+"Beyond security, we’ve implemented a sophisticated Multi-Agent Router. Whether it’s an HR Database agent with PII masking, a sandboxed Code Execution agent, or a Financial Advisor, our system routes triggers to the right specialist.
+
+Each of these agents operates under a scoped permission set. The email agent can't touch the database, and the HR agent can't execute code. It’s a principle of least privilege, enforced not just by prompts, but by our security gateway."
+
+[05:15 – 05:45] THE VISUAL EXPERIENCE: OBSIDIAN DASHBOARD
+"To manage all this, we designed the 'Obsidian' UI—a high-fidelity dashboard built with Next.js and Framer Motion. It gives administrators a bird’s-eye view of ASI scores, risk distributions, and real-time security events. You can see the firewall in action as it neutralizes threats millisecond by millisecond."
+
+[05:45 – 06:00] CLOSING & VISION
+"We’ve built Rectitude.AI to be local-first, MIT-licensed, and production-ready. We believe that security shouldn't be a bottleneck for AI—it should be the foundation. 
+
+Check out our code on GitHub, and let's build the future of secure generative intelligence together. Thanks for watching."
+
+[AYUSH: Slight nod/smile. Fade to logo.]
+
+================================================================================
+END OF PITCH.TXT
+================================================================================

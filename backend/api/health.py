@@ -19,7 +19,7 @@ async def health_check():
     infra = [
         {"name": "FastAPI Gateway", "status": "ACTIVE", "latency": "14ms", "region": "US-EAST-1", "icon_type": "Router"},
         {"name": "Intent Classifier", "status": "ACTIVE", "latency": "42ms", "region": "US-EAST-1", "icon_type": "Cpu"},
-        {"name": "Perplexity Detector", "status": "ACTIVE", "latency": "22ms", "region": "US-EAST-1", "icon_type": "Zap"},
+        {"name": "Content Moderation (NSFW/Toxicity)", "status": "ACTIVE", "latency": "22ms", "region": "US-EAST-1", "icon_type": "Zap"},
         {"name": "LLM Provider", "status": "ACTIVE", "latency": "1.4s", "region": "Local (Ollama)", "icon_type": "Database"},
         {"name": "Policy Engine", "status": "ACTIVE", "latency": "8ms", "region": "Edge", "icon_type": "ShieldCheck"},
     ]

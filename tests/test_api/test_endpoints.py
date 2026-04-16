@@ -172,7 +172,7 @@ class TestPolicyEngine:
         decisions = [
             SecurityDecision(decision="block", risk_score=0.90, reason="injection", metadata={"classifier": "regex_prefilter"}),
             SecurityDecision(decision="block", risk_score=0.95, reason="injection", metadata={"classifier": "injection_ml"}),
-            SecurityDecision(decision="allow", risk_score=0.1, reason="ok", metadata={"classifier": "perplexity"}),
+
         ]
         result = apply_policies(req, decisions)
         assert result.decision == "block"

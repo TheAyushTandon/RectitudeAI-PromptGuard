@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
-from backend.api import health, auth
+from backend.api import health, auth, dashboard
 from backend.gateway import routes as inference
 from backend.gateway.config import settings
 from backend.utils.logging import setup_logging, get_logger
@@ -22,8 +22,27 @@ async def lifespan(app: FastAPI):
     """Application lifespan manager."""
     # Startup
     logger.info(f"Starting {settings.app_name} v{settings.app_version}")
+    
+    # Pre-load ML models to avoid cold-start latency
+    from backend.layer5_orchestration.orchestrator import _get_injection_clf, _get_intent_clf
+    logger.info("Pre-warming Tier-2 ML classifiers...")
+    _get_injection_clf()._load()
+    _get_intent_clf()._load()
+    
     logger.info(f"LLM Provider: {settings.llm_provider}")
     logger.info(f"Debug Mode: {settings.debug}")
+    
+    # Load dynamic threshold overrides
+    from backend.layer5_orchestration.orchestrator import _audit
+    overrides = _audit.load_settings()
+    if overrides:
+        logger.info("Applying persistent dashboard threshold overrides...")
+        settings.prefilter_instant_block = overrides.get("prefilter_instant_block", settings.prefilter_instant_block)
+        settings.prefilter_escalate = overrides.get("prefilter_escalate", settings.prefilter_escalate)
+        settings.ml_block_threshold = overrides.get("ml_block_threshold", settings.ml_block_threshold)
+        settings.ml_escalate_threshold = overrides.get("ml_escalate_threshold", settings.ml_escalate_threshold)
+        settings.asi_alert_threshold = overrides.get("asi_alert_threshold", settings.asi_alert_threshold)
+
     yield
     # Shutdown
     logger.info("Shutting down application")
@@ -45,7 +64,6 @@ app = FastAPI(
     - ✅ LLM Integration (OpenAI/Anthropic/Ollama)
     - ✅ Prompt Injection Detection (distilbert)
     - ✅ Harmful Intent Detection (toxic-bert)
-    - ✅ Perplexity-based Obfuscation Detection (gpt2)
     - ✅ Risk Fusion Policy Engine
 
     ### Coming Soon (Phase 3-5)
@@ -87,6 +105,7 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(auth.router)
 app.include_router(inference.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/")

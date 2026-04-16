@@ -3,62 +3,46 @@ version: '3.8'
 services:
   api:
     build: .
+    image: rectitude-api:latest
+    container_name: rectitude-api
     ports:
       - "8000:8000"
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - DEFAULT_MODEL=${DEFAULT_MODEL:-gemma:2b}
     env_file:
       - .env
     depends_on:
       - redis
     volumes:
       - ./logs:/app/logs
+      - ./backend/data:/app/backend/data
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build: ./frontend
+    image: rectitude-frontend:latest
+    container_name: rectitude-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - api
     restart: unless-stopped
 
   redis:
     image: redis:7-alpine
+    container_name: rectitude-redis
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     restart: unless-stopped
 
-  key-manager:
-    build: ../fhe-zkp-pipeline-2/key-manager
-    ports:
-      - "8010:8000"
-    environment:
-      - CIRCUIT_ARTIFACT_DIR=/app/artifacts/fhe_circuit
-      - INFERENCE_SERVICE_URL=http://fhe-inference:8000
-    volumes:
-      - fhe_artifacts:/app/artifacts
-      - fhe_keys:/app/keys
-
-  fhe-inference:
-    build: ../fhe-zkp-pipeline-2/fhe-inference
-    ports:
-      - "8011:8000"
-    volumes:
-      - fhe_artifacts:/app/artifacts
-      - fhe_keys:/app/keys
-
-  zkp-prover:
-    build: ../fhe-zkp-pipeline-2/zkp-prover
-    ports:
-      - "8012:8000"
-    volumes:
-      - zkp_circuits:/app/circuits
-
-  zkp-verifier:
-    build: ../fhe-zkp-pipeline-2/zkp-verifier
-    ports:
-      - "8013:8000"
-    volumes:
-      - zkp_circuits:/app/circuits
-
 volumes:
-  redis_data:
-  fhe_artifacts:
-  fhe_keys:
-  zkp_circuits:
+  redis_data:

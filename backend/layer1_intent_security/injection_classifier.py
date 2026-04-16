@@ -86,9 +86,14 @@ class InjectionClassifier:
         else:
             decision, reason = "allow", "No injection detected"
 
+        # High-certainty clamping
+        final_risk = round(injection_prob, 4)
+        if final_risk > 0.98:
+            final_risk = 1.0
+
         return SecurityDecision(
             decision=decision,
-            risk_score=round(injection_prob, 4),
+            risk_score=final_risk,
             reason=reason,
             metadata={"classifier": "injection_ml", "model": self._model.config.name_or_path if hasattr(self._model.config, 'name_or_path') else "loaded"},
         )

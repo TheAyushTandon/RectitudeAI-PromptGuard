@@ -27,7 +27,7 @@ from typing import List, Optional
 
 from backend.layer1_intent_security.regex_prefilter import prefilter, PrefilterResult
 from backend.layer1_intent_security.injection_classifier import InjectionClassifier
-from backend.layer1_intent_security.perplexity_detector import PerplexityDetector
+from backend.layer1_intent_security.intent_classifier import IntentClassifier
 from backend.layer1_intent_security.policy_engine import apply_policies
 from backend.layer2_crypto.capability_tokens import CapabilityTokenService
 from backend.layer3_behavior_monitor.asi_calculator import ASICalculator
@@ -41,7 +41,7 @@ logger = get_logger(__name__)
 
 # Lazy-loaded singletons — initialised once on first request
 _injection_clf: Optional[InjectionClassifier] = None
-_perplexity_clf: Optional[PerplexityDetector] = None
+_intent_clf: Optional[IntentClassifier] = None
 _token_svc = CapabilityTokenService()
 _asi_calc = ASICalculator()
 _audit = AuditLogger()
@@ -54,11 +54,11 @@ def _get_injection_clf() -> InjectionClassifier:
     return _injection_clf
 
 
-def _get_perplexity_clf() -> PerplexityDetector:
-    global _perplexity_clf
-    if _perplexity_clf is None:
-        _perplexity_clf = PerplexityDetector()
-    return _perplexity_clf
+def _get_intent_clf() -> IntentClassifier:
+    global _intent_clf
+    if _intent_clf is None:
+        _intent_clf = IntentClassifier()
+    return _intent_clf
 
 
 @dataclass
@@ -96,12 +96,43 @@ class Orchestrator:
         session_id = req.conversation_id or req.user_id
         signals: dict = {}
 
+        # ── Bypass Check ─────────────────────────────────────────────────────
+        if not req.is_security_enabled:
+            logger.info("[%s] SECURITY BYPASS ACTIVE — proceeding with raw output", request_id)
+            return OrchestratorResult(
+                decision="allow",
+                risk_score=0.0,
+                reason="Security Gateway disabled by user",
+                request_id=request_id,
+                latency_ms=self._ms(t0),
+                tier_reached=0,
+                asi_score=1.0,
+                asi_alert=False,
+                output_safe=True,
+                detector_signals={"bypass": True}
+            )
+
+        # ── Tier 0: Benign Intent Fast-Path ───────────────────────────────
+        # If the user is asking "what is [term]" or "define [term]", we lower risk
+        _benign_patterns = [
+            r"(?i)^what\s+is\s+[\"']?\w+[\"']?\??$",
+            r"(?i)^how\s+does\s+[\"']?\w+[\"']?\s+work\??$",
+            r"(?i)^define\s+[\"']?\w+[\"']?$",
+            r"(?i)^explain\s+(the\s+concept\s+of\s+)?[\"']?\w+[\"']?$",
+        ]
+        import re
+        is_educational = any(re.match(p, req.prompt.strip()) for p in _benign_patterns)
+        educational_bonus = -0.4 if is_educational else 0.0
+
         # ── Tier 1: Regex prefilter ─────────────────────────────────────────
         pre: PrefilterResult = prefilter(req.prompt)
+        pre.risk_score = max(0.0, pre.risk_score + educational_bonus)
+
         signals["regex_prefilter"] = {
-            "decision": pre.decision,
+            "decision": "allow" if pre.risk_score < 0.85 else pre.decision,
             "risk_score": pre.risk_score,
             "triggered": pre.triggered,
+            "educational_fastpath": is_educational
         }
         logger.info("[%s] T1 regex: %s score=%.3f", request_id, pre.decision, pre.risk_score)
 
@@ -132,24 +163,26 @@ class Orchestrator:
             injection_task = asyncio.create_task(
                 _get_injection_clf().classify(req.prompt)
             )
-            perplexity_task = asyncio.create_task(
-                _get_perplexity_clf().classify(req.prompt)
+            intent_task = asyncio.create_task(
+                _get_intent_clf().classify(req.prompt)
             )
-            injection_dec, perplexity_dec = await asyncio.gather(
-                injection_task, perplexity_task
+            injection_dec, intent_dec = await asyncio.gather(
+                injection_task, intent_task
             )
-            ml_decisions = [injection_dec, perplexity_dec]
+            ml_decisions = [injection_dec, intent_dec]
             signals["injection_ml"] = {
                 "decision": injection_dec.decision,
                 "risk_score": injection_dec.risk_score,
             }
-            signals["perplexity"] = {
-                "decision": perplexity_dec.decision,
-                "risk_score": perplexity_dec.risk_score,
+            signals["intent_ml"] = {
+                "decision": intent_dec.decision,
+                "risk_score": intent_dec.risk_score,
+                "nsfw": intent_dec.metadata.get("nsfw_score"),
+                "toxic": intent_dec.metadata.get("toxic_score"),
             }
             logger.info(
-                "[%s] T2 ML: inj=%.3f perp=%.3f",
-                request_id, injection_dec.risk_score, perplexity_dec.risk_score,
+                "[%s] T2 ML: inj=%.3f intent=%.3f",
+                request_id, injection_dec.risk_score, intent_dec.risk_score,
             )
 
         # Add regex as a SecurityDecision for policy fusion

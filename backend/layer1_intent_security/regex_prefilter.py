@@ -23,20 +23,26 @@ from typing import List, Tuple
 # A score >= 1.0 means instant block regardless of fusion.
 # ---------------------------------------------------------------------------
 _RAW_PATTERNS: List[Tuple[str, str, float]] = [
-    # ── Role-switch / persona hijack ────────────────────────────────────────
-    (r"\byou\s+are\s+(now\s+)?(a|an)\b", "persona_switch", 0.75),
-    (r"\bact\s+as\s+(if\s+you\s+are|a|an)\b", "act_as", 0.80),
-    (r"\bpretend\s+(you\s+are|to\s+be)\b", "pretend_persona", 0.75),
-    (r"\brole[\s\-]?play\s+as\b", "roleplay_as", 0.70),
-    (r"\byour\s+(new\s+)?(persona|identity|name)\s+is\b", "identity_assign", 0.80),
-    (r"\bfrom\s+now\s+on\s+(you\s+are|act|behave)\b", "from_now_on", 0.85),
-    (r"\b(switch|change|forget)\s+(your\s+)?(role|identity|persona|purpose)\b", "role_change", 0.80),
+    # ── Technical Attack Keywords ──────────────────────────────────────────
+    (r"\bprompt\s+injections?\b", "injection_keyword", 0.95),
+    (r"\b(sql|command|code|js|javascript|xml)\s+injections?\b", "tech_injection", 0.95),
+    (r"\b(malicious\s+)?payload\b", "payload_keyword", 0.80),
+    (r"\b(bypass|evade|circumvent)\s+(security|filter|guard)\b", "security_evasion", 0.95),
+    (r"\bbase64\s+(encode|decode|text)\b", "base64_op", 0.40),
+    (r"\brole[\s\-]?play\s+as\b", "roleplay_as", 0.50),
+    (r"\byour\s+(new\s+)?(persona|identity|name)\s+is\b", "identity_assign", 0.60),
+    (r"\bfrom\s+now\s+on\s+(you\s+are|act|behave)\b", "from_now_on", 0.65),
+    (r"\b(switch|change|forget)\s+(your\s+)?(role|identity|persona|purpose)\b", "role_change", 0.60),
 
     # ── Instruction override / ignore ────────────────────────────────────────
-    (r"\bignore\s+(all\s+)?(previous|prior|above|earlier|your)\s+(instructions?|prompt|rules?|context|constraints?)\b", "ignore_prev", 1.0),
-    (r"\bdisregard\s+(all\s+)?(previous|prior|above|earlier)\b", "disregard_prev", 1.0),
-    (r"\boverride\s+(all\s+)?(previous|safety|prior|system)\b", "override_system", 1.0),
-    (r"\bforget\s+(all\s+)?(previous|prior|your)\s+(instructions?|rules?|training)\b", "forget_instructions", 1.0),
+    (r"\bignore\s+(all\s+|previous\s+|prior\s+|above\s+|earlier\s+|your\s+|the\s+|of\s+the\s+)*(instructions?|prompt|rules?|context|constraints?|system\s+prompts?)\b", "ignore_prev", 1.0),
+    (r"\bignore\s+every\s+single\s+(instruction|directive)\b", "ignore_every", 1.0),
+    (r"\bignore\s+(the\s+)?(above|instructions?)\b", "ignore_soft", 0.70),
+    (r"\breset\s+(your\s+)?(memory|context|instructions?)\b", "reset_context", 0.85),
+    (r"\bdisregard\s+(everything|your\s+instructions?|system\s+prompts?)\b", "disregard", 0.95),
+    (r"\bnew\s+system\s+target\b", "system_target", 0.95),
+    (r"\binstructions\b", "instructions_keyword", 0.30),
+    (r"\bsystem\s+prompts?\b", "system_prompt_keyword", 0.50),
     (r"\byour\s+(real|true|actual|original)\s+instructions?\b", "real_instructions", 0.85),
     (r"\bnew\s+(system\s+)?(instruction|directive|command|order)\b", "new_instruction", 0.75),
     (r"\bdo\s+not\s+(follow|obey|respect)\s+(your\s+)?(rules?|guidelines?|instructions?|training)\b", "disobey", 0.90),
@@ -53,12 +59,13 @@ _RAW_PATTERNS: List[Tuple[str, str, float]] = [
     (r"\bbefore\s+this\s+conversation\s+(started|began)\b", "before_conversation", 0.80),
 
     # ── Classic jailbreak personas ────────────────────────────────────────────
-    (r"\b(DAN|DUDE|AIM|STAN|JAILBREAK|evil\s+mode|developer\s+mode|god\s+mode|unrestricted\s+mode)\b", "jailbreak_persona", 1.0),
-    (r"\byou\s+have\s+no\s+(restrictions?|limits?|rules?|guidelines?|filters?)\b", "no_restrictions", 0.95),
-    (r"\b(safety|content|ethical?)\s+(filter|guard|restriction|limit)\s+(off|disabled?|removed?|bypass)\b", "filter_off", 1.0),
-    (r"\bbypass\s+(your\s+)?(safety|content|ethical?|security|policy)\b", "bypass_safety", 1.0),
-    (r"\bjailbreak\b", "jailbreak_keyword", 0.95),
-    (r"\bdo\s+anything\s+now\b", "do_anything_now", 0.95),
+    # Escalate instead of instant block to allow "what is jailbreak" style questions.
+    (r"\b(DAN|DUDE|AIM|STAN|JAILBREAK|evil\s+mode|developer\s+mode|god\s+mode|unrestricted\s+mode)\b", "jailbreak_persona", 0.75),
+    (r"\byou\s+have\s+no\s+(restrictions?|limits?|rules?|guidelines?|filters?)\b", "no_restrictions", 0.70),
+    (r"\b(safety|content|ethical?)\s+(filter|guard|restriction|limit)\s+(off|disabled?|removed?|bypass)\b", "filter_off", 0.80),
+    (r"\bbypass\s+(your\s+)?(safety|content|ethical?|security|policy)\b", "bypass_safety", 0.80),
+    (r"\bjailbreak\b", "jailbreak_keyword", 0.55),
+    (r"\bdo\s+anything\s+now\b", "do_anything_now", 0.70),
 
     # ── Indirect / data-borne injection ─────────────────────────────────────
     (r"<\s*(INST|SYS|SYSTEM|HUMAN|ASSISTANT)\s*>", "xml_tag_injection", 0.90),
@@ -68,23 +75,28 @@ _RAW_PATTERNS: List[Tuple[str, str, float]] = [
     (r"\buser:\s*ignore\b", "user_colon_ignore", 0.90),
 
     # ── Encoding / obfuscation tricks ────────────────────────────────────────
-    (r"base64\s*[:\(]", "base64_encoding", 0.70),
+    # base64 is only suspicious when combined with "decode and follow/execute"
     (r"\b(decode|base64)\b.{0,40}\b(follow|instructions?|execute|run|apply)\b", "decode_then_follow", 0.90),
     (r"\\u[0-9a-fA-F]{4}", "unicode_escape", 0.60),
     (r"&#x[0-9a-fA-F]+;", "html_entity_hex", 0.65),
     (r"\b(rot13|hex\s*decode|url\s*decode|base\s*64\s*decode)\b", "decode_instruction", 0.75),
 
     # ── Tool / function call injection ──────────────────────────────────────
-    (r"\bcall\s+(the\s+)?(function|tool|api|endpoint)\b", "tool_call_inject", 0.70),
-    (r"\binvoke\s+(the\s+)?(function|tool|plugin)\b", "invoke_tool", 0.70),
+    # FIX: Require "ignore" / "override" / injection-specific context so "call the API" doesn't fire.
+    (r"\b(call|invoke)\s+(the\s+)?(function|tool|api|endpoint).{0,40}(ignore|override|bypass|inject)\b", "tool_call_inject", 0.80),
+    (r"\binvoke\s+(the\s+)?(function|tool|plugin)\b.{0,40}(ignore|override|bypass)\b", "invoke_tool_inject", 0.80),
     (r"\"function\"\s*:\s*\"[^\"]+\"", "json_function_inject", 0.75),
-    (r"\bexecute\s+(the\s+)?(following|this)\s+(command|code|script|function)\b", "execute_command", 0.80),
-    (r"\brun\s+(this\s+)?(code|script|command|shell)\b", "run_code", 0.75),
+    # FIX: Only flag execute_command / run_code when paired with privileged/system targets
+    # Legitimate dev use (run this code, execute this function) is handled by the code_exec_agent safely.
+    (r"\bexecute\s+(the\s+)?(following|this)\s+(shell\s+command|system\s+command|bash\s+script)\b", "execute_system_command", 0.90),
+    (r"\brun\s+(this\s+)?(shell|bash|system|os\s+command)\b", "run_system_shell", 0.90),
 
     # ── Data exfiltration patterns ───────────────────────────────────────────
     (r"\b(send|email|forward|upload|post|transmit)\s+(all\s+)?(user\s+data|customer\s+(data|records?)|database|credentials?|api\s+keys?)\b", "exfil_send", 1.0),
     (r"\b(send|email|forward)\s+.{0,40}(customer|user|database|sensitive)\s+(data|records?|info)\b", "exfil_send_broad", 1.0),
-    (r"\b(list|dump|extract|export)\s+(all\s+)?(users?|records?|passwords?|tokens?|secrets?|database)\b", "exfil_dump", 0.90),
+    # FIX: "list users" is legitimate; require malicious context (all + sensitive fields, or dump/extract)
+    (r"\b(dump|extract)\s+(all\s+)?(users?|records?|passwords?|tokens?|secrets?|database)\b", "exfil_dump", 0.90),
+    (r"\blist\s+all\s+(passwords?|tokens?|secrets?|credentials?|api\s+keys?)\b", "exfil_list_secrets", 0.95),
     (r"\bexport\s+(the\s+)?(user\s+|customer\s+|all\s+)?(database|records?|data)\b", "exfil_export", 1.0),
     (r"\bexfiltrat\w+\b", "exfiltrate_keyword", 1.0),
     (r"\bsteal\s+(data|credentials?|tokens?|secrets?)\b", "steal_data", 1.0),
@@ -108,7 +120,9 @@ _RAW_PATTERNS: List[Tuple[str, str, float]] = [
     (r"\bas\s+(admin|root|superuser|system|operator)\b", "as_admin", 0.75),
 
     # ── Social engineering / pressure tactics ────────────────────────────────
-    (r"\b(this\s+is\s+(a\s+)?)?(emergency|life\s+or\s+death|urgent|critical)\b", "urgency_pressure", 0.55),
+    # FIX: "critical infrastructure" or "urgent request" are legitimate. 
+    # Only flag coercive phrasing that pairs urgency with a demand to bypass something.
+    (r"\b(emergency|life\s+or\s+death|urgent|critical)\b.{0,60}\b(ignore|bypass|override|skip|disable)\b", "urgency_coercion", 0.75),
     (r"\b(i\s+am|i'm)\s+(your\s+)?(creator|developer|owner|anthropic|openai|admin|supervisor)\b", "false_authority", 0.85),
     (r"\bmy\s+(boss|manager|ceo|lawyer)\s+(told|said|asked|instructed)\s+me\b", "authority_claim", 0.60),
     (r"\bif\s+you\s+(don'?t|refuse|won'?t)\s+.{0,30}\s+(i\s+will|you\s+will|someone\s+will)\b", "threat_language", 0.75),
@@ -122,6 +136,32 @@ _RAW_PATTERNS: List[Tuple[str, str, float]] = [
     (r"\bremember\s+(this\s+)?(instruction|rule|directive)\s+for\b", "persistent_inject", 0.80),
     (r"\bfor\s+(all\s+)?(future|subsequent|following)\s+(responses?|replies?|messages?)\b", "future_instruction", 0.75),
     (r"\balways\s+(from\s+now|henceforth)\b", "always_henceforth", 0.75),
+
+    # ── Inappropriate / NSFW / Illegal Content ─────────────────────────────
+    # FIX: "explicit" alone fires on "explicit instructions". "sex" fires on "sexual harassment policy".
+    # Use more specific patterns targeting clearly inappropriate content only.
+    (r"\b(nude|nudes|porn|pornography|nsfw)\b", "nsfw_content", 1.0),
+    (r"\b(naked|undress)\s+(me|her|him|them|someone|people|a\s+(woman|man|girl|boy))\b", "nsfw_undress", 1.0),
+    (r"\bsexual\s+(content|act|fantasy|roleplay)\b", "nsfw_sexual_content", 1.0),
+    # FIX: Use word-boundary-aware patterns to avoid "method" → "meth", "drug store" → "drug"
+    (r"\b(bomb|explosive)\b", "bomb_keyword", 0.90),
+    (r"\b(cocaine|heroin|methamphetamine|fentanyl)\b", "hard_drug_keyword", 0.90),
+    (r"\b(illegal\s+weapon|unlicensed\s+firearm|ghost\s+gun)\b", "illegal_weapon", 0.90),
+    # FIX: "kill" is legitimate in computing context. Require person/people target, not process/job.
+    (r"\b(kill|murder|harm|attack)\s+(a\s+)?(person|people|user|humans?|someone|them)\b", "harm_to_person", 0.95),
+    (r"\b(suicide|self-harm)\b", "self_harm_keyword", 0.70),
+    # FIX: "hack" alone is too broad (life hack, hackathon). Require attack/intrusion context.
+    (r"\b(steal|theft|robbery)\b", "criminal_theft", 0.80),
+    (r"\bhack\s+(into|the\s+system|the\s+server|the\s+database|credentials?)\b", "hack_intrusion", 0.90),
+    (r"\bbypass\s+security\s+(controls?|measures?|checks?|authentication|authorization)\b", "bypass_sec_control", 0.85),
+
+    # ── File system / Config probing ──────────────────────────────────────────
+    (r"\b(read\w*|open\w*|show|cat|display|reveal)\s+.*?\.(py|env|config|json|yaml|yml|db|sqlite)\b", "file_probing", 0.95),
+    # FIX: Bare "password" is too broad. Target credential theft context, not policy/reset questions.
+    (r"\b(api_key|secret_key|private_key|auth_token)\b", "key_probing", 0.85),
+    (r"\b(password|credential)\b.{0,60}\b(dump|export|steal|extract|list\s+all|leak)\b", "password_exfil", 0.90),
+    (r"\b(ls|dir|list\s+files|list\s+directories)\b", "directory_listing", 0.70),
+    (r"\b(\.\./|\.\.\\)\b", "path_traversal", 0.90),
 
     # ── Prompt injection via content fields ──────────────────────────────────
     (r"\b(document|file|email|message|webpage)\s+says?\s*:?\s*(ignore|forget|override)\b", "content_injection", 0.85),
@@ -157,7 +197,7 @@ def prefilter(prompt: str) -> PrefilterResult:
     for pattern, label, score in PATTERNS:
         if pattern.search(prompt):
             triggered.append(label)
-            if score >= 1.0:
+            if score >= 0.92:
                 return PrefilterResult(
                     decision="block",
                     risk_score=1.0,

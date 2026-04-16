@@ -72,3 +72,21 @@ class ErrorResponse(BaseModel):
     message: str = Field(..., description="Error message")
     details: Optional[Dict[str, Any]] = Field(None, description="Additional error details")
     request_id: Optional[str] = Field(None, description="Request identifier")
+
+
+class AgentChatResponse(BaseModel):
+    """Response schema for agent-routed chat."""
+    
+    response: str = Field(..., description="Agent-generated response")
+    agent_used: str = Field(..., description="Name of the agent that handled the request")
+    request_id: str = Field(..., description="Unique request identifier")
+    session_id: str = Field("", description="Session identifier")
+    tools_invoked: List[str] = Field(default_factory=list, description="Tools used by the agent")
+    capability_token_issued: bool = Field(False, description="Whether a capability token was issued")
+    security_metadata: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Security pipeline metadata (risk score, decisions, ASI)"
+    )
+    execution_time_ms: float = Field(0.0, description="Total execution time")
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+

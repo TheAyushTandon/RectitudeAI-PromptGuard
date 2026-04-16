@@ -20,23 +20,27 @@ RectitudeAI is a production-grade security gateway for LLM applications that add
 - Unauthorized tool execution
 - Multi-turn jailbreak attempts
 
-### Current Status: Phase 2 In Progress 🔄
+### Current Status: Phase 5 Completed (Production Ready) ✅
 
-**Implemented:**
-- ✅ FastAPI backend with async support
-- ✅ JWT authentication
-- ✅ Rate limiting with Redis
-- ✅ LLM integration (OpenAI/Anthropic/Ollama)
-- ✅ Structured logging
-- ✅ Health checks and monitoring
-- ✅ Prompt injection & harmful intent classifier (`michellejieli/NSFW_text_classifier`)
+**Implemented Core Features:**
+- ✅ **Layer 1: Intent Security** (Context-aware Regex + DeBERTa v3 transformer detection)
+- ✅ **Layer 2: Integrity & Tokens** (HMAC-signed scoped capability tokens for tool safety)
+- ✅ **Layer 2: Output Mediation** (Precision-tuned PII/Secret redaction)
+- ✅ **Layer 3: Behavioral Monitoring** (Agent Stability Index (ASI) with session drift analysis)
+- ✅ **Layer 4: Red Teaming** (RL-based policy auto-tuning and JailbreakBench evaluation)
+- ✅ **Multi-Agent System**: Specialized agents (HR, Email, Code, Finance) with sandbox isolation
+- ✅ **Advanced Orchestrator**: Intelligent intent routing and security-tiered processing
 
-**Coming Soon (Phase 2-5):**
-- 🔜 Perplexity-based anomaly detection
-- 🔜 Policy engine with risk aggregation
-- 🔜 Cryptographic tool signing
-- 🔜 Red team engine
-- 🔜 Behavioral anomaly detection
+---
+
+## 🔬 System Documentation
+
+For a deep-dive into the vision, architecture, and security layers of Rectitude.AI, see:
+- **[RECTITUDE_DOCUMENTATION.md](file:///d:/PROJECTS/Rectitude.AI%20new/RECTITUDE_DOCUMENTATION.md)**: Executive and technical overview.
+- **[CODEBASE_MAP.md](file:///d:/PROJECTS/Rectitude.AI%20new/CODEBASE_MAP.md)**: Architectural Mermaid diagrams and file mapping.
+- **[TECH_STACK.md](file:///d:/PROJECTS/Rectitude.AI%20new/TECH_STACK.md)**: Detailed tool and dependency analysis.
+
+---
 
 ## 🚀 Quick Start
 
@@ -119,6 +123,37 @@ rectitude-ai/
 └── datasets/                    # Security datasets (JailbreakBench)
 ```
 
+## 🛠️ API Endpoints
+
+| Method | Path | Description |
+| :--- | :--- | :--- |
+| `POST` | `/auth/login` | Get JWT access token |
+| `POST` | `/v1/inference` | Standard security-checked inference |
+| `POST` | `/v1/agent/chat` | **New**: Agent-routed secure chat |
+| `GET` | `/v1/agents` | List all specialized agents |
+| `GET` | `/v1/session/{id}/asi` | Get behavioral stability score |
+
+## 🤖 The Multi-Agent Ecosystem
+
+The gateway automatically routes prompts to specialized agents, each with dedicated security sandboxes:
+
+| Agent | Purpose | Primary Sandbox |
+| :--- | :--- | :--- |
+| **HR Asst** | Employee Data | Read-only SQL + PII Masking |
+| **Email Asst** | Support Outreach | Recipient Domain Whitelisting |
+| **DevOps Exec** | Data Analysis | `RestrictedPython` RCE Jail |
+| **Finance Pro** | Financial Planning | Multi-turn ASI Stability Track |
+
+## 🛡️ Security Scenarios
+
+| Scenario | Attack Type | Gateway Action | Result |
+| :--- | :--- | :--- | :--- |
+| **Injection** | "Ignore prev instructions..." | L1 Instant Block | 🚫 Blocked |
+| **Data Leak** | "Draft email to evil@com" | L2 Tool Check | 🚫 Blocked |
+| **Exfiltration** | "Show me SSNs" | L2 Output Mediator | 🔒 Redacted |
+| **Jailbreak** | Persona drift over 10 turns | L3 ASI Scoring | 🔒 Revoked |
+
+
 ## 🔧 Configuration
 
 ### Environment Variables
@@ -184,35 +219,31 @@ pytest tests/test_api/test_endpoints.py::TestAuthEndpoints::test_login_success -
 
 ## 🏗️ Development Roadmap
 
-### Phase 1: Core Gateway ✅ (Weeks 1-3)
+### Phase 1: Core Gateway ✅
 - FastAPI server
 - JWT authentication
 - Rate limiting
-- LLM integration
 
-### Phase 2: Detection Layer 🔄 (Weeks 4-7)
+### Phase 2: Detection Layer ✅
 - Injection classifier
-- Perplexity detector
 - Policy engine
 
-### Phase 3: Cryptographic Layer (Weeks 8-10)
-- Document hashing
+### Phase 3: Cryptographic Layer ✅
 - Tool call signing
+- Capability tokens
 - Sandbox validation
 
-### Phase 4: Red Team Engine (Weeks 11-12)
+### Phase 4: Red Team Engine ✅
 - Adversarial prompt generator
 - Attack runner
-- ASR metrics
 
-### Phase 5: Behavioral Analysis (Weeks 13-14)
-- Multi-turn detection
-- Session profiling
+### Phase 5: Behavioral Analysis ✅
+- Multi-turn detection (ASI)
 - Anomaly scoring
 
-## 🔒 Security Features
+---
 
-### Phase 1 & 2 (Current)
+**Status**: Phase 5 Completed | **Next Milestone**: Frontend Integration & Showcase
 - ✅ JWT-based authentication
 - ✅ Token expiration & refresh
 - ✅ Rate limiting (100 req/min default)

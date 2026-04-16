@@ -32,11 +32,17 @@ logger = get_logger(__name__)
 
 # All tools that exist in the system — anything not in this list
 # is rejected outright regardless of what the LLM tries to call.
+# FIX: Added "calculator", "fetch_stock_price", and "get_current_time" which
+# are used by FinancialAdvisorAgent and GeneralAgent but were absent from KNOWN_TOOLS.
+# Without these, CapabilityTokenService.get_default_scope() always produced an empty
+# effective_scope for those agents, and their tools were invoked with zero token coverage.
 KNOWN_TOOLS = {
     "read_file", "write_file", "delete_file",
     "search_web", "send_email", "read_crm",
     "log_ticket", "query_database", "execute_code",
     "read_calendar", "create_task",
+    # Agent-specific low-risk tools
+    "calculator", "fetch_stock_price", "get_current_time",
 }
 
 # Risk tiers: high-risk tools require explicit scope grant

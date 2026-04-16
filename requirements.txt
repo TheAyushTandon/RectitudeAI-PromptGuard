@@ -28,9 +28,18 @@ pyarrow>=14.0.0                 # required for pandas parquet (JailbreakBench da
 gymnasium>=0.29.1
 stable-baselines3>=2.3.2
 
+# ── Agent Orchestration ───────────────────────────────────────────────────────
+langgraph>=0.2.0
+langchain-core>=0.3.0
+langchain-ollama>=0.2.0
+
+# ── Agent Sandbox (Code Execution) ────────────────────────────────────────────
+RestrictedPython>=7.0
+
 # ── Database & Caching ────────────────────────────────────────────────────────
 redis==5.0.1
 sqlalchemy==2.0.25
+aiosqlite>=0.20.0
 
 # ── HTTP & Async ──────────────────────────────────────────────────────────────
 httpx==0.26.0
