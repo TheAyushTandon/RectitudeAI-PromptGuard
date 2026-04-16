@@ -1,21 +1,21 @@
 /* eslint-disable */
 "use client";
 
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 
 import React, { useState, useEffect } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "../../components/ui/sidebar";
+import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { motion } from "framer-motion";
-import { FallingPattern } from "../../components/ui/falling-pattern";
-import { LordIcon } from "../../components/ui/lord-icon";
+import { FallingPattern } from "@/components/ui/falling-pattern";
+import { LordIcon } from "@/components/ui/lord-icon";
 import { ShieldCheck, Database, LayoutDashboard, BrainCog, Zap } from "lucide-react";
 import Link from "next/link";
-import SecurityCharts from "../../components/dashboard/SecurityCharts";
-import LiveLogFeed from "../../components/dashboard/LiveLogFeed";
-import DynamicThresholds from "../../components/dashboard/DynamicThresholds";
-import { MetricCard } from "../../components/ui/metric-card";
-import IncidentChart from "../../components/ui/incident-chart";
-import { BGPattern } from "../../components/ui/bg-pattern";
+import SecurityCharts from "@/components/dashboard/SecurityCharts";
+import LiveLogFeed from "@/components/dashboard/LiveLogFeed";
+import DynamicThresholds from "@/components/dashboard/DynamicThresholds";
+import { MetricCard } from "@/components/ui/metric-card";
+import IncidentChart from "@/components/ui/incident-chart";
+import { BGPattern } from "@/components/ui/bg-pattern";
 
 
 export default function DashboardPage() {

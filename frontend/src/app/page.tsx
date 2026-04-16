@@ -7,10 +7,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ExternalLink, ChevronRight, Check, X, Plug2, Building2, Bot, Diamond } from "lucide-react";
-import { LordIcon } from "../components/ui/lord-icon";
-import { Navbar, NavBody, NavItems, NavbarLogo, NavbarButton, MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle } from "../components/ui/resizable-navbar";
-import { ThreeDMarquee } from "../components/ui/3d-marquee";
-import { FooterSection } from "../components/ui/footer-section";
+import { LordIcon } from "@/components/ui/lord-icon";
+import { Navbar, NavBody, NavItems, NavbarLogo, NavbarButton, MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle } from "@/components/ui/resizable-navbar";
+import { ThreeDMarquee } from "@/components/ui/3d-marquee";
+import { FooterSection } from "@/components/ui/footer-section";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);

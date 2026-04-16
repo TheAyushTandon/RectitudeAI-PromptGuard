@@ -14,9 +14,9 @@ export const metadata: Metadata = {
   },
 };
 
-import { Providers } from "../components/providers";
+import { Providers } from "@/components/providers";
 import { Geist } from "next/font/google";
-import { cn } from "../lib/utils";
+import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 

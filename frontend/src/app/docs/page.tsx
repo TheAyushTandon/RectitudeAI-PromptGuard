@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import { Shield, LayoutDashboard, Key, Activity, Zap } from "lucide-react";
-import { Navbar, NavBody, NavItems, NavbarLogo, NavbarButton, MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle } from "../../components/ui/resizable-navbar";
-import { FooterSection } from "../../components/ui/footer-section";
-import { TextEffect } from "../../components/ui/text-effect";
-import { Marquee, DocsBadge } from "../../components/ui/docs-marquee";
+import { Navbar, NavBody, NavItems, NavbarLogo, NavbarButton, MobileNav, MobileNavHeader, MobileNavMenu, MobileNavToggle } from "@/components/ui/resizable-navbar";
+import { FooterSection } from "@/components/ui/footer-section";
+import { TextEffect } from "@/components/ui/text-effect";
+import { Marquee, DocsBadge } from "@/components/ui/docs-marquee";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, LineChart, Line, ReferenceLine
 } from "recharts";
