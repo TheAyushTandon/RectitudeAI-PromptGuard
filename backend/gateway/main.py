@@ -105,10 +105,13 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
+        "http://localhost:3001",
         "http://127.0.0.1:3000",
-        "https://rectitude-ai.vercel.app",  # Add your specific vercel URL here
+        "http://127.0.0.1:3001",
+        "https://rectitude-ai.vercel.app",
+        "https://rectitude-ai-prompt-guard.vercel.app",
     ],
-    allow_origin_regex="https://rectitude-ai-.*\.vercel\.app", # Allow Vercel preview deployments
+    allow_origin_regex=r"https://.*\.vercel\.app", # Broad allow for Vercel for now
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
