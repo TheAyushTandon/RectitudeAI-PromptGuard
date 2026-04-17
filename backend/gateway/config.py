@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_expiration_minutes: int = 60
 
-    # LLM
+    use_local_db: bool = False  # Force using local SQLite DB
     llm_provider: str = "groq"  # supports: openai, anthropic, ollama, mock, groq
     openai_api_key: str = ""
     anthropic_api_key: str = ""

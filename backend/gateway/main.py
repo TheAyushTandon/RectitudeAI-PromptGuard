@@ -100,10 +100,15 @@ async def security_block_exception_handler(request: Request, exc: SecurityBlockE
         },
     )
 
-# CORS middleware
+# CORS middleware - Robust configuration for Local Backend + Vercel Frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Restrict in production
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://rectitude-ai.vercel.app",  # Add your specific vercel URL here
+    ],
+    allow_origin_regex="https://rectitude-ai-.*\.vercel\.app", # Allow Vercel preview deployments
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
