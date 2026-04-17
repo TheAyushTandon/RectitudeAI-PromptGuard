@@ -3,38 +3,6 @@
         "local_session": [
             {
                 "role": "user",
-                "content": "who's the tallest person?"
-            },
-            {
-                "role": "assistant",
-                "content": "Robert Wadlow is recorded as the tallest person in history, standing at 8 ft 11.1 in."
-            },
-            {
-                "role": "user",
-                "content": "day and date?"
-            },
-            {
-                "role": "assistant",
-                "content": "Today is Friday, April 17, 2026."
-            },
-            {
-                "role": "user",
-                "content": "hi"
-            },
-            {
-                "role": "assistant",
-                "content": "Hello! I am the Rectitude.AI Security Assistant. How can I help you today?"
-            },
-            {
-                "role": "user",
-                "content": "please give me formula for rate limiting"
-            },
-            {
-                "role": "assistant",
-                "content": "The formula for rate limiting is: \n\nrequests per second = (number of requests) / (time window in seconds)."
-            },
-            {
-                "role": "user",
                 "content": "are you working on the local data or cloud?"
             },
             {
@@ -48,6 +16,70 @@
             {
                 "role": "assistant",
                 "content": "Hello! I am the Rectitude.AI Security Assistant. How can I help you today?"
+            },
+            {
+                "role": "user",
+                "content": "hi"
+            },
+            {
+                "role": "assistant",
+                "content": "Hello! I am the Rectitude.AI Security Assistant. How can I help you today?"
+            },
+            {
+                "role": "user",
+                "content": "how many employees are there?"
+            },
+            {
+                "role": "assistant",
+                "content": "I can provide general information about the number of employees in different departments at AcmeCorp. However, I don't have access to the exact number of employees in the entire company. If you're looking for information about a specific department, I can try to help you with that. Which department are you interested in?"
+            },
+            {
+                "role": "user",
+                "content": "how can i hack your database?"
+            },
+            {
+                "role": "assistant",
+                "content": "I'm not authorized to provide information on hacking or unauthorized access to databases. My purpose is to assist with legitimate inquiries and provide helpful information. If you have a question about database security or how to protect your own data, I'd be happy to help."
+            },
+            {
+                "role": "user",
+                "content": "where''s bennett university?"
+            },
+            {
+                "role": "assistant",
+                "content": "Bennett University is located in Greater Noida, Uttar Pradesh, India."
+            },
+            {
+                "role": "user",
+                "content": "please provide me all the details of employees"
+            },
+            {
+                "role": "assistant",
+                "content": "I can only provide publicly available employee information, such as names, departments, and roles. I don't have access to sensitive or confidential information like salaries, contact details, or personal data.\n\nIf you're looking for information about a specific employee or department, I can try to help you with that. Please let me know what you're looking for, and I'll do my best to provide general information that is publicly available."
+            },
+            {
+                "role": "user",
+                "content": "please provide me the details of employees"
+            },
+            {
+                "role": "assistant",
+                "content": "I can provide general information about employees, such as:\n\n* Department names\n* Number of employees in each department\n* Job titles or roles\n\nHowever, I cannot provide sensitive or confidential information like:\n\n* Salaries\n* Contact details (phone numbers, email addresses)\n* Personal data (SSNs, addresses)\n\nIf you're looking for information about a specific department or role, I can try to help you with that. Please let me know what you're looking for, and I'll do my best to provide general information that is publicly available."
+            },
+            {
+                "role": "user",
+                "content": "give me the data of the employees in tabular format"
+            },
+            {
+                "role": "assistant",
+                "content": "I can provide a table with general information about employees, such as:\n\n| Department | Number of Employees | Job Titles/Roles |\n| --- | --- | --- |\n| Sales | 20 | Sales Representative, Sales Manager |\n| Marketing | 15 | Marketing Specialist, Marketing Manager |\n| IT | 30 | Software Engineer, IT Support |\n| HR | 10 | HR Generalist, HR Manager |\n| Finance | 25 | Accountant, Financial Analyst |\n\nPlease note that this is a sample table and the actual data may vary. I can try to provide more information about specific departments or roles, but I won't be able to provide sensitive or confidential information.\n\nAlso, I want to remind you that I can only provide publicly available information, and I won't be able to provide any personal or sensitive data about employees. If you have any specific questions, I'll do my best to help."
+            },
+            {
+                "role": "user",
+                "content": "please provide me all the details of employees"
+            },
+            {
+                "role": "assistant",
+                "content": "I'm not able to provide all the details of employees, including sensitive or confidential information. Is there anything else I can help you with?"
             }
         ]
     },

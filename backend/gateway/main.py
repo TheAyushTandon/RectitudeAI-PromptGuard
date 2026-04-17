@@ -23,6 +23,13 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info(f"Starting {settings.app_name} v{settings.app_version}")
     
+    # Auto-seed database if missing (Crucial for Render/Cloud instances)
+    from scripts.seed_demo_db import seed
+    try:
+        seed()
+    except Exception as e:
+        logger.error(f"Failed to auto-seed database: {e}")
+    
     # Pre-load ML models to avoid cold-start latency
     from backend.layer5_orchestration.orchestrator import _get_injection_clf, _get_intent_clf
     logger.info("Pre-warming Tier-2 ML classifiers...")

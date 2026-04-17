@@ -46,7 +46,12 @@ EMPLOYEES = [
 def seed():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
-    # Remove existing DB to start fresh
+    # Only seed if DB is missing or explicitly forced
+    if os.path.exists(DB_PATH) and os.environ.get("FORCE_SEED") != "true":
+        print(f"[SKIP] Demo database already exists at {DB_PATH}")
+        return
+
+    print(f"[*] Initializing demo database at {DB_PATH}...")
     if os.path.exists(DB_PATH):
         os.remove(DB_PATH)
 

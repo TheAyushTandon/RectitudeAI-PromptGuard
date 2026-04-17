@@ -16,11 +16,14 @@ async def health_check():
     Returns service status and component health with detailed infrastructure telemetry.
     """
     
+    import os
+    db_exists = os.path.exists(os.path.join("data", "demo", "employees.db"))
+    
     infra = [
-        {"name": "FastAPI Gateway", "status": "ACTIVE", "latency": "14ms", "region": "US-EAST-1", "icon_type": "Router"},
-        {"name": "Intent Classifier", "status": "ACTIVE", "latency": "42ms", "region": "US-EAST-1", "icon_type": "Cpu"},
-        {"name": "Content Moderation (NSFW/Toxicity)", "status": "ACTIVE", "latency": "22ms", "region": "US-EAST-1", "icon_type": "Zap"},
-        {"name": "LLM Provider", "status": "ACTIVE", "latency": "1.4s", "region": "Local (Ollama)", "icon_type": "Database"},
+        {"name": "FastAPI Gateway", "status": "ACTIVE", "latency": "14ms", "region": "Render", "icon_type": "Router"},
+        {"name": "Intent Classifier", "status": "ACTIVE", "latency": "42ms", "region": "Render", "icon_type": "Cpu"},
+        {"name": "SQLite Database", "status": "ACTIVE" if db_exists else "MISSING", "latency": "2ms", "region": "Local Volume", "icon_type": "Database"},
+        {"name": "LLM Provider (Groq)", "status": "ACTIVE", "latency": "0.8s", "region": "Cloud", "icon_type": "Zap"},
         {"name": "Policy Engine", "status": "ACTIVE", "latency": "8ms", "region": "Edge", "icon_type": "ShieldCheck"},
     ]
 
