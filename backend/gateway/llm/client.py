@@ -243,7 +243,7 @@ class GeminiClient(BaseLLMClient):
     """
     def __init__(self, model: Optional[str] = None):
         self.api_key = settings.gemini_api_key
-        self.model = model or settings.gemini_model or "gemini-2.0-flash"
+        self.model = model or settings.gemini_model or "gemini-1.5-flash"
         self.base_url = "https://generativelanguage.googleapis.com/v1beta/models"
 
     async def generate(
