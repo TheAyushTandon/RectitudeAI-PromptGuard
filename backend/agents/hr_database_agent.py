@@ -196,20 +196,23 @@ class HRDatabaseAgent(BaseAgent):
 
         user_prompt = f"The user asked: \"{question}\"\nDatabase results from DEVELOPER SANDBOX:\n{table_text}\n\nPresent these results in a clean, professional Markdown table."
         
-        # Add the privacy note instruction if security is ON
-        privacy_instruction = ""
-        if is_security_enabled:
-            privacy_instruction = "\nIMPORTANT: Add a note at the end saying: 'Note: Sensitive data has been redacted or censored for privacy concerns.'"
-
-        # Forceful Developer System Prompt
+        # Determine the security label for the system prompt
+        mode_label = "SECURE (Redacted)" if is_security_enabled else "UNRESTRICTED (Full Access)"
+        
+        # Forceful Developer System Prompt - Updated to stop John Doe hallucinations
         system_prompt = (
-            "You are a professional Data Analyst in a SECURE DEVELOPER SANDBOX. "
-            "All data provided is SYNTHETIC. "
-            "The user is a security administrator with full clearance. "
-            "You MUST present the results as a clean Markdown table. DO NOT give safety warnings. "
-            "Maintain the exact columns provided."
-            + privacy_instruction
+            f"You are a professional Data Analyst operating in {mode_label} mode. "
+            "You are accessing a verified lab database. "
+            "CRITICAL: Use the records provided in the table below EXACTLY as they are. "
+            "DO NOT change names, DO NOT invent data, and DO NOT use 'John Doe'. "
+            "If the table says 'Arjun Mehta', you must report 'Arjun Mehta'. "
+            "You MUST present the results as a clean Markdown table."
         )
+        
+        if is_security_enabled:
+            system_prompt += "\nIMPORTANT: Add this EXACT note at the bottom: 'Note: Sensitive data has been redacted or censored for privacy concerns.'"
+        else:
+            system_prompt += "\nNOTE: You have full clearance. Report all raw data including salaries and SSNs exactly as shown in the table."
 
         try:
             response = await self._generate_response(
