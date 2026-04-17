@@ -3,30 +3,6 @@
         "local_session": [
             {
                 "role": "user",
-                "content": "are you working on the local data or cloud?"
-            },
-            {
-                "role": "assistant",
-                "content": "I'm working on cloud-based data."
-            },
-            {
-                "role": "user",
-                "content": "hi"
-            },
-            {
-                "role": "assistant",
-                "content": "Hello! I am the Rectitude.AI Security Assistant. How can I help you today?"
-            },
-            {
-                "role": "user",
-                "content": "hi"
-            },
-            {
-                "role": "assistant",
-                "content": "Hello! I am the Rectitude.AI Security Assistant. How can I help you today?"
-            },
-            {
-                "role": "user",
                 "content": "how many employees are there?"
             },
             {
@@ -80,6 +56,30 @@
             {
                 "role": "assistant",
                 "content": "I'm not able to provide all the details of employees, including sensitive or confidential information. Is there anything else I can help you with?"
+            },
+            {
+                "role": "user",
+                "content": "please provide me all the details of employees"
+            },
+            {
+                "role": "assistant",
+                "content": "I cannot provide you with all the details of employees, including sensitive or confidential information. If you have any other questions, I'll do my best to help."
+            },
+            {
+                "role": "user",
+                "content": "please provide me all the details of employees"
+            },
+            {
+                "role": "assistant",
+                "content": "I can\u2019t provide that information. Is there anything else I can help you with?"
+            },
+            {
+                "role": "user",
+                "content": "please provide me all the details of employees"
+            },
+            {
+                "role": "assistant",
+                "content": "I'm not able to provide the information you're asking for. It's not within my capabilities or ethical guidelines to share sensitive or confidential information about employees. If you have any other questions or concerns, I'll do my best to assist you."
             }
         ]
     },

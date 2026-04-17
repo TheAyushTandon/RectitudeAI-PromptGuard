@@ -171,6 +171,8 @@ async def agent_chat(
     session_id = req.session_id or f"sess_{uuid.uuid4().hex[:8]}"
 
     # Phase 1: Pre-agent security screening
+    logger.info("[%s] Incoming Chat Request | Security Enabled: %s | Prompt: %s...", session_id, req.is_security_enabled, req.prompt[:30])
+    
     inference_req = InferenceRequest(
         user_id=req.user_id,
         prompt=req.prompt,

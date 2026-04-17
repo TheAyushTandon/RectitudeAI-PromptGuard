@@ -26,7 +26,7 @@ export default function DashboardPage() {
   const [isConnected, setIsConnected] = useState(true);
 
   // Production-ready API Base
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:10000";
 
   const links = [
     { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard className="h-5 w-5 text-white/50" /> },

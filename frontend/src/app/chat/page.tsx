@@ -35,7 +35,7 @@ export default function ChatPage() {
   const [activeTab, setActiveTab] = useState("chat");
 
   // Production-ready API Base
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:10000";
 
   const [currentModel, setCurrentModel] = useState<string>(() => {
     if (typeof window !== "undefined") {
@@ -550,6 +550,19 @@ export default function ChatPage() {
                   <div className="w-full max-w-7xl flex flex-col min-h-full">
                     {messages.length === 0 ? (
                       <div className="flex flex-col items-center justify-center flex-1 animate-in fade-in duration-700">
+                        <div className="flex items-center gap-4 mb-6">
+                           <ShieldCheck className={cn(
+                             "w-10 h-10 transition-all duration-500",
+                             isSecurityEnabled ? "text-[#DC2626] drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" : "text-neutral-700 opacity-20"
+                           )} />
+                           <div className="h-4 w-px bg-white/10" />
+                           <span className={cn(
+                             "text-[10px] font-mono tracking-[0.4em] uppercase",
+                             isSecurityEnabled ? "text-[#DC2626]" : "text-neutral-600"
+                           )}>
+                             {isSecurityEnabled ? "Gateway Secure" : "Gateway Bypassed"}
+                           </span>
+                        </div>
                         <h1 className="text-4xl sm:text-5xl font-semibold text-center text-foreground dark:text-white tracking-tight">
                           How can I help you?
                         </h1>
