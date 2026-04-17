@@ -1,6 +1,7 @@
 """Application configuration."""
 
-from pydantic_settings import BaseSettings
+import os
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Literal, Optional
 
 
@@ -60,10 +61,13 @@ class Settings(BaseSettings):
     fhe_key_manager_url: str = "http://key-manager:8000"
     fhe_inference_url: str = "http://fhe-inference:8000"
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
-        extra = "ignore"
+    model_config = SettingsConfigDict(
+        env_file=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env"),
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+        cli_parse_args=False
+    )
 
 
 settings = Settings()
