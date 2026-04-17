@@ -50,7 +50,7 @@ _WRITE_PATTERNS = re.compile(
 )
 
 # Sensitive column names that should be masked in output
-_SENSITIVE_COLUMNS = {"ssn", "phone", "email", "salary", "performance_review"}
+_SENSITIVE_COLUMNS = {"ssn", "phone", "email", "salary", "performance_rating"}
 
 
 class DatabaseTool:

@@ -41,25 +41,15 @@ Available database tables:
 {schema}
 """
 
-_SQL_GENERATION_PROMPT = """Given the user's question about employees, generate a SQL SELECT query.
+_SQL_GENERATION_PROMPT = """You are a SAFE SQL Generator. Convert the question into a SELECT query.
+SCHEMA: {schema}
 
-DATABASE SCHEMA:
-{schema}
-
-IMPORTANT SCHEMA RULES:
-1. ALWAYS prefix column names with the table name or alias to avoid 'ambiguous column' errors (e.g., use 'employees.id' instead of just 'id').
-2. The 'employees' table DOES NOT have a 'department_id'.
-3. The 'employees.department' column contains the TEXT name of the department.
-4. To JOIN: SELECT ... FROM employees JOIN departments ON employees.department = departments.name
-
-Rules:
-1. ONLY SELECT queries. Never INSERT, UPDATE, DELETE, or DROP.
-2. LIMIT results to 10 rows maximum unless it is an aggregate query (COUNT, AVG, SUM).
-3. For names/strings, use 'LIKE %term%' or 'COLLATE NOCASE'.
-4. Respond with ONLY the SQL query. No explanation, no markdown.
+IMPORTANT SECURITY RULES:
+1. NEVER include 'salary', 'ssn', or 'performance_rating' in your SELECT list.
+2. If asked for these, return a query for public fields (name, role, department) only.
+3. Respond ONLY with the SQL query.
 
 User question: {question}
-
 SQL query:"""
 
 _SYSTEM_PROMPT_RAW = """You are a raw employee data processor. You have UNRESTRICTED access to all employee records.
@@ -142,6 +132,7 @@ class HRDatabaseAgent(BaseAgent):
             return "I'm sorry, I couldn't find that in our records. Could you try rephrasing your question?"
 
         # Step 5: Execute query
+        logger.info(f"Agent executing SQL (Security: {'ON' if is_security_enabled else 'OFF'}): {sql[:50]}...")
         result = await _db_tool.execute(sql, mask_sensitive=is_security_enabled)
 
         if "error" in result and result["error"]:
