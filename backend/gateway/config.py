@@ -1,7 +1,6 @@
 """Application configuration."""
 
-import os
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 from typing import Literal, Optional
 
 
@@ -29,8 +28,6 @@ class Settings(BaseSettings):
     ollama_model: str = "qwen2.5:7b"
     groq_api_key: str = ""
     groq_model: str = "llama-3.3-70b-versatile"
-    gemini_api_key: str = ""
-    gemini_model: str = "gemini-1.5-flash"
     default_model: str = "gemma:2b"
 
     # Rate limiting
@@ -61,13 +58,10 @@ class Settings(BaseSettings):
     fhe_key_manager_url: str = "http://key-manager:8000"
     fhe_inference_url: str = "http://fhe-inference:8000"
 
-    model_config = SettingsConfigDict(
-        env_file=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env"),
-        env_file_encoding="utf-8",
-        case_sensitive=False,
-        extra="ignore",
-        cli_parse_args=False
-    )
+    class Config:
+        env_file = ".env"
+        case_sensitive = False
+        extra = "ignore"
 
 
 settings = Settings()

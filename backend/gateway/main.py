@@ -23,10 +23,11 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info(f"Starting {settings.app_name} v{settings.app_version}")
     
-    # Auto-seed database if missing (Crucial for Render/Cloud instances)
+    # Auto-seed database (Crucial for fresh demo data)
     from scripts.seed_demo_db import seed
     try:
-        seed()
+        # Force fresh seed on every startup for consistent demo state
+        seed(force_seed=True)
     except Exception as e:
         logger.error(f"Failed to auto-seed database: {e}")
     

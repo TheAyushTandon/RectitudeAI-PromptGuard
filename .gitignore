@@ -50,6 +50,7 @@ htmlcov/
 # Logs
 *.log
 logs/*.log
+logs/*.json*
 
 # Data & Models
 data/models/

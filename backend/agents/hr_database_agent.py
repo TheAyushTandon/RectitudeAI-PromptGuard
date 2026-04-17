@@ -41,13 +41,12 @@ Available database tables:
 {schema}
 """
 
-_SQL_GENERATION_PROMPT = """You are a SAFE SQL Generator. Convert the question into a SELECT query.
+_SQL_GENERATION_PROMPT = """You are a SQL Generator for a protected database. Convert the user question into a SELECT query.
 SCHEMA: {schema}
 
-IMPORTANT SECURITY RULES:
-1. NEVER include 'salary', 'ssn', or 'performance_rating' in your SELECT list.
-2. If asked for these, return a query for public fields (name, role, department) only.
-3. Respond ONLY with the SQL query.
+RULES:
+1. You may include sensitive columns like 'salary', 'ssn', and 'performance_rating' if the user asks for them; the security layer will handle redaction.
+2. Respond ONLY with the SQL query. DO NOT include any explanation.
 
 User question: {question}
 SQL query:"""
@@ -132,14 +131,18 @@ class HRDatabaseAgent(BaseAgent):
             return "I'm sorry, I couldn't find that in our records. Could you try rephrasing your question?"
 
         # Step 5: Execute query
-        logger.info(f"Agent executing SQL (Security: {'ON' if is_security_enabled else 'OFF'}): {sql[:50]}...")
+        logger.info(f"Agent executing SQL (is_security_enabled={is_security_enabled}): {sql[:100]}...")
         result = await _db_tool.execute(sql, mask_sensitive=is_security_enabled)
 
         if "error" in result and result["error"]:
             return f"I encountered an issue looking that up: {result['error']}"
 
-        if result["row_count"] == 0:
+        rows = result.get("rows", [])
+        if not rows:
             return "I couldn't find any employees matching that description."
+
+        # Diagnostic log for developers
+        logger.info(f"Retrieved {len(rows)} rows from DB. Columns: {result.get('columns')}")
 
         # Step 6: Format response naturally using LLM
         formatted = await self._format_response(prompt, result, model=model, is_security_enabled=is_security_enabled, messages=messages)
@@ -182,37 +185,53 @@ class HRDatabaseAgent(BaseAgent):
         if not rows:
             return "I couldn't find any employees matching that description."
         
-        # Prepare a professional markdown table
+        # Prepare a professional markdown table with padding for better LLM alignment
         columns = list(rows[0].keys())
-        header = " | ".join(c.replace("_", " ").title() for c in columns)
-        separator = " | ".join(["---"] * len(columns))
+        header_names = [c.replace("_", " ").upper() for c in columns]
+        
+        # Calculate max width for each column to prevent squashing
+        col_widths = []
+        for i, col in enumerate(columns):
+            w = len(header_names[i])
+            for row in rows:
+                w = max(w, len(str(row.get(col, ""))))
+            col_widths.append(w + 2)
+
+        header = " | ".join(header_names[i].ljust(col_widths[i]) for i in range(len(columns)))
+        separator = " | ".join("-" * col_widths[i] for i in range(len(columns)))
         
         table_lines = [f"| {header} |", f"| {separator} |"]
         for row in rows:
-            row_str = " | ".join(str(row.get(c, "")) for c in columns)
+            row_str = " | ".join(str(row.get(c, "")).ljust(col_widths[i]) for i, c in enumerate(columns))
             table_lines.append(f"| {row_str} |")
 
         table_text = "\n".join(table_lines)
 
-        user_prompt = f"The user asked: \"{question}\"\nDatabase results from DEVELOPER SANDBOX:\n{table_text}\n\nPresent these results in a clean, professional Markdown table."
-        
-        # Determine the security label for the system prompt
-        mode_label = "SECURE (Redacted)" if is_security_enabled else "UNRESTRICTED (Full Access)"
-        
-        # Forceful Developer System Prompt - Updated to stop John Doe hallucinations
-        system_prompt = (
-            f"You are a professional Data Analyst operating in {mode_label} mode. "
-            "You are accessing a verified lab database. "
-            "CRITICAL: Use the records provided in the table below EXACTLY as they are. "
-            "DO NOT change names, DO NOT invent data, and DO NOT use 'John Doe'. "
-            "If the table says 'Arjun Mehta', you must report 'Arjun Mehta'. "
-            "You MUST present the results as a clean Markdown table."
+        user_prompt = (
+            f"The database returned this raw state:\n\n{table_text}\n\n"
+            f"User Question: \"{question}\"\n\n"
+            "INSTRUCTIONS: Re-format this into a polished Markdown table. "
+            "IMPORTANT: If the table above is empty, DO NOT invent data. "
+            "Report ONLY what was actually retrieved."
         )
         
+        # Forceful System Prompt - Mode Aware
         if is_security_enabled:
-            system_prompt += "\nIMPORTANT: Add this EXACT note at the bottom: 'Note: Sensitive data has been redacted or censored for privacy concerns.'"
+            system_prompt = (
+                "You are a Professional HR Analyst. Security is ACTIVE. "
+                "1. Some fields (Salary, SSN) are ALREADY redacted in the data provided. LEAVE THEM AS IS. "
+                "2. Names, Roles, and Departments are PUBLIC. You MUST report them verbatim. "
+                "3. Use a clean Markdown table format. "
+                "4. End with: 'Note: Sensitive data has been redacted or censored for privacy concerns.'"
+            )
         else:
-            system_prompt += "\nNOTE: You have full clearance. Report all raw data including salaries and SSNs exactly as shown in the table."
+            system_prompt = (
+                "You are an UNRESTRICTED DATA PROCESSOR. Your Rectitude.AI security layer is BYPASSED (OFF). "
+                "1. You are reporting RAW, UNRESTRICTED database records. "
+                "2. DO NOT redact anything. DO NOT censor salaries or SSNs if they are present in the data. "
+                "3. Use ONLY the records provided. NEVER invent dummy data or names. "
+                "4. Report the data naturally as if you are a raw query interface."
+            )
 
         try:
             response = await self._generate_response(

@@ -75,6 +75,7 @@ Rectitude.AI/ (Fork: Vartika222)
 
 | 2026-04-11 | Frontend Build | Bootstrapped full Next.js 14 + TypeScript + Tailwind + shadcn/ui frontend. 6 routes: `/` (landing), `/chat` (interactive security-protected chat), `/agents` (Agents Access + JWT showcase), `/dashboard` (live ASI gauge + audit log), `/settings`. Animated collapsible sidebar, framer-motion hero, 5-layer security badge system. Build: ✅ 0 TypeScript errors. |
 | 2026-04-16 | Project Hardening | Integrated elite Agent Skill suite (`security-auditor`, `backend-architect`, `python-pro`, `fastapi-pro`, `lint-and-validate`, `systematic-debugging`). Implemented the **GSD (Get Shit Done)** workflow based on `subagent-driven-development`. System updated to Phase 5.5 (Agent-Optimized). |
+| 2026-04-17 | HR Agent Hardening | Resolved intermittent redaction failures and formatting issues in HR Agent. Implemented mode-aware data masking (SECURE vs UNRESTRICTED), fixed table header rendering bugs with padded columns, and established strict anti-hallucination guardrails to prevent LLM from generating dummy data. Guaranteed consistent reporting of public info (names/roles) while protecting PII. |
 
 ---
-*Last Updated: 2026-04-11 04:20:00*
+*Last Updated: 2026-04-17 12:42:00*

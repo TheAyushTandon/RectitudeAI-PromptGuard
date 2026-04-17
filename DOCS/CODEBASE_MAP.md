@@ -95,4 +95,4 @@ Key parameters from `backend/gateway/config.py` and `.env`:
 > [!TIP]
 > **Credit Saving Rule**: Before exploring individual files, refer to this map. Only read specific files if you need to modify logic or understand a complex implementation detail not covered here.
 
-*Last Updated: 2026-04-10*
+*Last Updated: 2026-04-17 12:45:00*

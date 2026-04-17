@@ -228,80 +228,14 @@ class GroqClient(BaseLLMClient):
     async def list_models(self) -> List[str]:
         """Returns a list of supported Groq models for selection."""
         return [
-            "llama-3.1-8b-instant",
             "llama-3.3-70b-versatile",
             "llama-3.1-70b-versatile",
+            "llama-3.1-8b-instant",
             "mixtral-8x7b-32768",
+            "llama3-70b-8192",
+            "llama3-8b-8192",
             "gemma2-9b-it"
         ]
-
-class GeminiClient(BaseLLMClient):
-    """
-    Direct integration with Google Gemini API via REST.
-    """
-    def __init__(self, model: Optional[str] = None):
-        self.api_key = settings.gemini_api_key
-        self.model = model or settings.gemini_model or "gemini-1.5-flash"
-        self.base_url = "https://generativelanguage.googleapis.com/v1beta/models"
-
-    async def generate(
-        self, 
-        prompt: Optional[str] = None, 
-        system_prompt: Optional[str] = None, 
-        messages: Optional[List[dict]] = None,
-        max_tokens: int = 1500, 
-        temperature: float = 0.7
-    ) -> InferenceResponse:
-        if not self.api_key:
-            raise HTTPException(status_code=500, detail="Gemini API key not configured")
-
-        url = f"{self.base_url}/{self.model}:generateContent?key={self.api_key}"
-        
-        # Build contents
-        contents = []
-        if messages:
-            for msg in messages:
-                role = "model" if msg["role"] == "assistant" else "user"
-                contents.append({"role": role, "parts": [{"text": msg["content"]}]})
-        else:
-            if prompt:
-                contents.append({"role": "user", "parts": [{"text": prompt}]})
-
-        payload = {
-            "contents": contents,
-            "generationConfig": {
-                "temperature": temperature,
-                "maxOutputTokens": max_tokens,
-            }
-        }
-        
-        if system_prompt:
-            payload["systemInstruction"] = {"parts": [{"text": system_prompt}]}
-
-        try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.post(url, json=payload)
-            
-            if response.status_code == 200:
-                result = response.json()
-                text = result["candidates"][0]["content"]["parts"][0]["text"]
-                return InferenceResponse(
-                    response=text,
-                    tool_calls=[],
-                    metadata={"model": self.model, "provider": "gemini"},
-                    request_id=str(uuid.uuid4()),
-                    timestamp=datetime.utcnow()
-                )
-            else:
-                logger.error(f"Gemini API error {response.status_code}: {response.text}")
-                raise HTTPException(status_code=response.status_code, detail=f"Gemini Service error: {response.text}")
-
-        except Exception as e:
-            logger.error(f"Unexpected error in GeminiClient: {str(e)}")
-            raise HTTPException(status_code=500, detail="Failed to generate response from Gemini")
-
-    async def list_models(self) -> List[str]:
-        return ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"]
 
 class TextualLLMClient(OllamaClient):
     """
@@ -334,8 +268,6 @@ def get_llm_client(client_type: str = "default", model_name: Optional[str] = Non
     elif provider == "groq":
         # Groq handles textual tasks well enough with the versatile model
         return GroqClient(model=model_name)
-    elif provider == "gemini":
-        return GeminiClient(model=model_name)
     elif settings.llm_provider == "mock":
         return MockLLMClient()
     else:

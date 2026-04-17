@@ -23,9 +23,9 @@ from backend.utils.logging import get_logger
 logger = get_logger(__name__)
 
 # Robustly resolve the project root directory
-_current = os.path.abspath(__file__)
+_current = os.path.dirname(os.path.abspath(__file__))
 _BASE_DIR = None
-# Traverse up to 5 levels to find the root
+# Traverse up to 5 levels to find the root containing 'data/'
 for _ in range(6):
     if os.path.exists(os.path.join(_current, "data")):
         _BASE_DIR = _current
@@ -36,10 +36,11 @@ for _ in range(6):
     _current = _parent
 
 if not _BASE_DIR:
-    # Fallback to the previous fixed logic if traversal fails
-    _BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    # Use workspace root primarily
+    _BASE_DIR = "d:/PROJECTS/Rectitude.AI new"
 
-DB_PATH = os.path.join(_BASE_DIR, "data", "demo", "employees.db")
+# Use os.path.normpath for Windows/Unix compatibility
+DB_PATH = os.path.normpath(os.path.join(_BASE_DIR, "data", "demo", "employees.db"))
 MAX_ROWS = 10
 TIMEOUT_SECONDS = 5.0
 
@@ -138,17 +139,19 @@ class DatabaseTool:
                     row_dict = {}
                     for i, col in enumerate(columns):
                         value = row[i]
+                        col_clean = col.strip().lower()
+                        
                         # Mask sensitive columns
-                        if mask_sensitive and col.lower() in _SENSITIVE_COLUMNS:
-                            if col.lower() == "ssn":
-                                value = "***-**-" + str(value)[-4:] if value else "***"
-                            elif col.lower() == "email":
-                                value = value.split("@")[0][:3] + "***@***" if value else "***"
-                            elif col.lower() == "phone":
-                                value = "***-***-" + str(value)[-4:] if value else "***"
-                            elif col.lower() == "salary":
-                                value = "[CONFIDENTIAL: SALARY DATA]"
-                            elif col.lower() == "performance_review":
+                        if mask_sensitive and col_clean in _SENSITIVE_COLUMNS:
+                            if col_clean == "ssn":
+                                value = "***-**-" + str(value)[-4:] if value else "[HIDDEN]"
+                            elif col_clean == "email":
+                                value = "[PROTECTED EMAIL]"
+                            elif col_clean == "phone":
+                                value = "[PROTECTED PHONE]"
+                            elif col_clean == "salary":
+                                value = "[CONFIDENTIAL]"
+                            elif col_clean == "performance_rating":
                                 value = "[REDACTED]"
                         row_dict[col] = value
                     result_rows.append(row_dict)

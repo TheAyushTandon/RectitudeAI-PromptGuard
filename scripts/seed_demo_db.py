@@ -13,7 +13,7 @@ import os
 import sqlite3
 import random
 
-DB_PATH = os.path.join("data", "demo", "employees.db")
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "demo", "employees.db")
 
 # Realistic demo data — all fictional
 DEPARTMENTS = ["Engineering", "Marketing", "Finance", "Human Resources", "Operations"]
@@ -43,17 +43,23 @@ EMPLOYEES = [
 ]
 
 
-def seed():
+def seed(force_seed: bool = False):
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
     # Only seed if DB is missing or explicitly forced
-    if os.path.exists(DB_PATH) and os.environ.get("FORCE_SEED") != "true":
+    should_force = force_seed or os.environ.get("FORCE_SEED") == "true"
+    
+    if os.path.exists(DB_PATH) and not should_force:
         print(f"[SKIP] Demo database already exists at {DB_PATH}")
         return
 
-    print(f"[*] Initializing demo database at {DB_PATH}...")
+    print(f"[*] Initializing demo database at {DB_PATH} (Force: {should_force})...")
     if os.path.exists(DB_PATH):
-        os.remove(DB_PATH)
+        try:
+            os.remove(DB_PATH)
+        except Exception as e:
+            print(f"[ERROR] Could not remove existing DB: {e}. It might be in use.")
+            return
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()

@@ -39,9 +39,9 @@ export default function ChatPage() {
 
   const [currentModel, setCurrentModel] = useState<string>(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("rectitude_selected_model") || "Select Model";
+      return localStorage.getItem("rectitude_selected_model") || "llama-3.3-70b-versatile";
     }
-    return "Select Model";
+    return "llama-3.3-70b-versatile";
   });
   const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [isSecurityEnabled, setIsSecurityEnabled] = useState<boolean>(() => {
