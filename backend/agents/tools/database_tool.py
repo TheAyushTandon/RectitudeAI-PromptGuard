@@ -22,8 +22,23 @@ from backend.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-# Resolve absolute path to the database file
-_BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+# Robustly resolve the project root directory
+_current = os.path.abspath(__file__)
+_BASE_DIR = None
+# Traverse up to 5 levels to find the root
+for _ in range(6):
+    if os.path.exists(os.path.join(_current, "data")):
+        _BASE_DIR = _current
+        break
+    _parent = os.path.dirname(_current)
+    if _parent == _current: # Reached disk root
+        break
+    _current = _parent
+
+if not _BASE_DIR:
+    # Fallback to the previous fixed logic if traversal fails
+    _BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 DB_PATH = os.path.join(_BASE_DIR, "data", "demo", "employees.db")
 MAX_ROWS = 10
 TIMEOUT_SECONDS = 5.0

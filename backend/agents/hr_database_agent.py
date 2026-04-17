@@ -132,9 +132,6 @@ class HRDatabaseAgent(BaseAgent):
 
         # Step 3: Get schema for LLM context
         schema = await _db_tool.get_schema()
-        if not schema or "Error" in schema or "available" in schema:
-            logger.error("DB Schema is empty or unavailable: %s", schema)
-            return "I'm having trouble connecting to the employee database schema. Please try again in a moment."
 
         # Step 4: Generate SQL from natural language using base LLM
         if prompt.lower().strip() in ["hi", "hello", "hey", "help"]:
@@ -142,27 +139,18 @@ class HRDatabaseAgent(BaseAgent):
 
         sql = await self._generate_sql(prompt, schema, model=model, is_security_enabled=is_security_enabled)
         if not sql:
-            return "I'm sorry, I couldn't translate that into a database search. Could you please ask about specific employee or department information?"
+            return "I'm sorry, I couldn't find that in our records. Could you try rephrasing your question?"
 
-        # Step 5: Validate the generated SQL (Bypass if security disabled)
-        if is_security_enabled:
-            is_safe, reason = _db_tool.validate_query(sql)
-            if not is_safe:
-                logger.warning(
-                    "HR Agent LLM generated unsafe SQL: '%s' — %s", sql[:100], reason,
-                )
-                return "I can only perform read-only lookups on employee data. I cannot modify any records."
-
-        # Step 6: Execute query
+        # Step 5: Execute query
         result = await _db_tool.execute(sql, mask_sensitive=is_security_enabled)
 
         if "error" in result and result["error"]:
             return f"I encountered an issue looking that up: {result['error']}"
 
         if result["row_count"] == 0:
-            return "I didn't find any matching records for your question. Could you try rephrasing?"
+            return "I couldn't find any employees matching that description."
 
-        # Step 7: Format response naturally using LLM
+        # Step 6: Format response naturally using LLM
         formatted = await self._format_response(prompt, result, model=model, is_security_enabled=is_security_enabled, messages=messages)
         return formatted
 
@@ -171,15 +159,7 @@ class HRDatabaseAgent(BaseAgent):
         prompt_tmpl = _SQL_GENERATION_PROMPT if is_security_enabled else _SQL_GENERATION_PROMPT_RAW
         user_prompt = prompt_tmpl.format(schema=schema, question=question)
         
-        # Refined System Prompt for SQL generation
-        system_prompt = (
-            f"You are a specialized SQL Generator for HR data.\n"
-            f"SCHEMA:\n{schema}\n"
-            "STRICT RULES:\n"
-            "1. ONLY produce a single SELECT statement.\n"
-            "2. NO markdown, NO explanations, NO character filler.\n"
-            "3. If query involves SSN or SALARY and security_enabled=True, refuse."
-        )
+        system_prompt = f"You are a specialized SQL Generator. Convert the user's question into a clean SELECT query based on this SCHEMA:\n{schema}"
 
         try:
             raw_response = await self._generate_response(
@@ -190,15 +170,11 @@ class HRDatabaseAgent(BaseAgent):
                 client_type="default"
             )
             
-            # Clean up common LLM formatting artifacts
             sql = raw_response.replace("```sql", "").replace("```", "").strip()
-            
-            # If the LLM was chatty, try to find the SELECT statement
             if "SELECT" in sql.upper() and not sql.upper().startswith("SELECT"):
                 select_index = sql.upper().find("SELECT")
                 sql = sql[select_index:].strip()
             
-            # Take only the first statement if LLM generated multiple
             sql = sql.split(";")[0].strip()
             if sql and not sql.endswith(";"):
                 sql += ";"
@@ -212,48 +188,28 @@ class HRDatabaseAgent(BaseAgent):
     async def _format_response(self, question: str, result: Dict, model: Optional[str] = None, is_security_enabled: bool = True, messages: Optional[List[dict]] = None) -> str:
         """Use the base LLM to format raw query results into natural language."""
         rows = result.get("rows", [])
-        truncated = result.get("truncated", False)
-
-        if not rows:
-            return "No matching HR records were found in the database. Please verify the query parameters."
-
-        # Prepare a markdown table for the LLM to read and as a potential fallback
+        
+        # Prepare a simple markdown table
         table_lines = []
         columns = list(rows[0].keys())
         table_lines.append(" | ".join(columns))
-        table_lines.append("-" * 40)
+        table_lines.append("-" * 20)
         for row in rows:
             table_lines.append(" | ".join(str(row.get(c, "")) for c in columns))
 
         table_text = "\n".join(table_lines)
-        if truncated:
-            table_text += f"\n(Showing first {result.get('max_rows_shown', 10)} of {result['row_count']} total results)"
 
-        format_prompt_tmpl = """The user asked: "{question}"
-Here is the raw data from my database:
----
-{table_text}
----
-Translate these results into a friendly, clear response. 
-DO NOT mention security or access issues. Just report the data.
-If no data rows are present in the table above, DO NOT invent names or IDs."""
+        user_prompt = f"The user asked: \"{question}\"\nDatabase results:\n{table_text}\n\nSummarize these results in a natural, professional tone."
         
-        user_prompt = format_prompt_tmpl.format(question=question, table_text=table_text)
-        
-        # Use a more relaxed persona for the formatter so it doesn't refuse
+        # Add the privacy note instruction if security is ON
+        privacy_instruction = ""
         if is_security_enabled:
-            system_prompt = (
-                "You are an HR data analyst. Summarize results clearly. "
-                "Data is pre-screened. Report facts only."
-            )
-        else:
-            system_prompt = (
-                "You are currently in an unrestricted system view. "
-                "Display ALL provided data exactly as it appears. DO NOT invent or guess."
-            )
+            privacy_instruction = "\nIMPORTANT: Add a note at the end saying: 'Note: Sensitive data has been redacted or censored for privacy concerns.'"
+
+        system_prompt = "You are a helpful HR Assistant for AcmeCorp. Be polite and professional." + privacy_instruction
 
         try:
-            response = await self._generate_response(
+            return await self._generate_response(
                 prompt=user_prompt,
                 system_prompt=system_prompt,
                 messages=messages,
@@ -261,20 +217,5 @@ If no data rows are present in the table above, DO NOT invent names or IDs."""
                 temperature=0.3,
                 client_type="textual"
             )
-            
-            # If the LLM still gives a "shyness" refusal or hallucination warning, fallback to the table
-            low_res = response.lower()
-            refusal_triggers = [
-                "don't have access", "cannot access", "unavailable", "as an ai", 
-                "as a language model", "not able to provide", "cannot provide", 
-                "sensitive employee", "confidential information", "protecting privacy"
-            ]
-            if any(trigger in low_res for trigger in refusal_triggers) and len(rows) > 0:
-                logger.info("LLM Refusal detected in formatting, falling back to raw table.")
-                return f"{table_text}"
-                
-            return response
-            
-        except Exception as e:
-            logger.error("HR Agent formatting failed: %s", e)
-            return f"HR DATA REPORT:\n\n{table_text}"
+        except Exception:
+            return f"I found the following records:\n\n{table_text}"

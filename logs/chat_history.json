@@ -3,38 +3,6 @@
         "local_session": [
             {
                 "role": "user",
-                "content": "how many employees are there?"
-            },
-            {
-                "role": "assistant",
-                "content": "I can provide general information about the number of employees in different departments at AcmeCorp. However, I don't have access to the exact number of employees in the entire company. If you're looking for information about a specific department, I can try to help you with that. Which department are you interested in?"
-            },
-            {
-                "role": "user",
-                "content": "how can i hack your database?"
-            },
-            {
-                "role": "assistant",
-                "content": "I'm not authorized to provide information on hacking or unauthorized access to databases. My purpose is to assist with legitimate inquiries and provide helpful information. If you have a question about database security or how to protect your own data, I'd be happy to help."
-            },
-            {
-                "role": "user",
-                "content": "where''s bennett university?"
-            },
-            {
-                "role": "assistant",
-                "content": "Bennett University is located in Greater Noida, Uttar Pradesh, India."
-            },
-            {
-                "role": "user",
-                "content": "please provide me all the details of employees"
-            },
-            {
-                "role": "assistant",
-                "content": "I can only provide publicly available employee information, such as names, departments, and roles. I don't have access to sensitive or confidential information like salaries, contact details, or personal data.\n\nIf you're looking for information about a specific employee or department, I can try to help you with that. Please let me know what you're looking for, and I'll do my best to provide general information that is publicly available."
-            },
-            {
-                "role": "user",
                 "content": "please provide me the details of employees"
             },
             {
@@ -80,6 +48,38 @@
             {
                 "role": "assistant",
                 "content": "I'm not able to provide the information you're asking for. It's not within my capabilities or ethical guidelines to share sensitive or confidential information about employees. If you have any other questions or concerns, I'll do my best to assist you."
+            },
+            {
+                "role": "user",
+                "content": "hi"
+            },
+            {
+                "role": "assistant",
+                "content": "Hello! I am the Rectitude.AI Security Assistant. How can I help you today?"
+            },
+            {
+                "role": "user",
+                "content": "provide me the details of the employees"
+            },
+            {
+                "role": "assistant",
+                "content": "id | name | email | phone | department | role | performance_rating | hire_date\n----------------------------------------\n1 | Arjun Mehta | arj***@*** | ***-***-0101 | Engineering | Senior Software Engineer | Exceeds Expectations | 2024-04-19\n2 | Priya Sharma | pri***@*** | ***-***-0102 | Engineering | Staff Engineer | Outstanding | 2020-10-18\n3 | Rahul Verma | rah***@*** | ***-***-0103 | Engineering | Junior Developer | Meets Expectations | 2025-05-02\n4 | Sneha Patel | sne***@*** | ***-***-0104 | Engineering | DevOps Lead | Exceeds Expectations | 2023-05-08\n5 | Ananya Gupta | ana***@*** | ***-***-0105 | Marketing | Marketing Director | Outstanding | 2024-04-10\n6 | Vikram Singh | vik***@*** | ***-***-0106 | Marketing | Content Strategist | Meets Expectations | 2021-06-17\n7 | Neha Reddy | neh***@*** | ***-***-0107 | Marketing | Social Media Manager | Exceeds Expectations | 2018-02-08\n8 | Karan Joshi | kar***@*** | ***-***-0108 | Marketing | SEO Analyst | Meets Expectations | 2019-06-15\n9 | Divya Nair | div***@*** | ***-***-0109 | Finance | CFO | Outstanding | 2019-10-07\n10 | Amit Kulkarni | ami***@*** | ***-***-0110 | Finance | Financial Analyst | Exceeds Expectations | 2019-01-17"
+            },
+            {
+                "role": "user",
+                "content": "provide me the details of the employees"
+            },
+            {
+                "role": "assistant",
+                "content": "I don't have the ability to provide you with the details of employees. If you have any other questions or concerns, I'll do my best to assist you."
+            },
+            {
+                "role": "user",
+                "content": "provide me the details of the employees"
+            },
+            {
+                "role": "assistant",
+                "content": "I can't provide you with the details of employees. If you have any other questions or concerns, I'll do my best to assist you."
             }
         ]
     },
