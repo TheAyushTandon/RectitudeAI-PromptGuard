@@ -228,12 +228,10 @@ class GroqClient(BaseLLMClient):
     async def list_models(self) -> List[str]:
         """Returns a list of supported Groq models for selection."""
         return [
+            "llama-3.1-8b-instant",
             "llama-3.3-70b-versatile",
             "llama-3.1-70b-versatile",
-            "llama-3.1-8b-instant",
             "mixtral-8x7b-32768",
-            "llama3-70b-8192",
-            "llama3-8b-8192",
             "gemma2-9b-it"
         ]
 
@@ -303,7 +301,7 @@ class GeminiClient(BaseLLMClient):
             raise HTTPException(status_code=500, detail="Failed to generate response from Gemini")
 
     async def list_models(self) -> List[str]:
-        return ["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"]
+        return ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"]
 
 class TextualLLMClient(OllamaClient):
     """
