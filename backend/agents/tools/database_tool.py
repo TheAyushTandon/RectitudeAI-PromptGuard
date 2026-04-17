@@ -22,7 +22,9 @@ from backend.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-DB_PATH = os.path.join("data", "demo", "employees.db")
+# Resolve absolute path to the database file
+_BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+DB_PATH = os.path.join(_BASE_DIR, "data", "demo", "employees.db")
 MAX_ROWS = 10
 TIMEOUT_SECONDS = 5.0
 

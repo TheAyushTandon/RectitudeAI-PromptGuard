@@ -132,6 +132,9 @@ class HRDatabaseAgent(BaseAgent):
 
         # Step 3: Get schema for LLM context
         schema = await _db_tool.get_schema()
+        if not schema or "Error" in schema or "available" in schema:
+            logger.error("DB Schema is empty or unavailable: %s", schema)
+            return "I'm having trouble connecting to the employee database schema. Please try again in a moment."
 
         # Step 4: Generate SQL from natural language using base LLM
         if prompt.lower().strip() in ["hi", "hello", "hey", "help"]:
