@@ -16,21 +16,10 @@ groq
 openai
 anthropic
 
-# ── ML & NLP — Tier 2 classifiers ──────────────
-torch --index-url https://download.pytorch.org/whl/cpu
-transformers
-scikit-learn
-numpy
-pandas
-
-# ── RL Policy Updater ───────────────────────────
-gymnasium
-stable-baselines3
-
 # ── Agent Orchestration ─────────────────────────
 langgraph
 langchain-core
-langchain-ollama
+# langchain-ollama is kept for local use but won't be called in cloud
 
 # ── Agent Sandbox (Code Execution) ──────────────
 RestrictedPython
@@ -46,3 +35,7 @@ aiohttp
 
 # ── Utilities ───────────────────────────────────
 python-dotenv
+
+# ── Note on ML ──────────────────────────────────
+# torch, transformers, and scikit-learn are removed for Cloud Free Tier 
+# compatibility (512MB RAM). Security classifiers will run in passthrough mode.
