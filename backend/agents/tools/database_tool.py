@@ -36,8 +36,12 @@ for _ in range(6):
     _current = _parent
 
 if not _BASE_DIR:
-    # Use workspace root primarily
-    _BASE_DIR = "d:/PROJECTS/Rectitude.AI new"
+    # Environment-agnostic fallback: checking current working directory
+    if os.path.exists(os.path.join(os.getcwd(), "data")):
+        _BASE_DIR = os.getcwd()
+    else:
+        # Final fallback to parent of backend if we're inside it
+        _BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 # Use os.path.normpath for Windows/Unix compatibility
 DB_PATH = os.path.normpath(os.path.join(_BASE_DIR, "data", "demo", "employees.db"))

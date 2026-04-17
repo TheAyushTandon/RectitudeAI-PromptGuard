@@ -113,11 +113,13 @@ class HRDatabaseAgent(BaseAgent):
         if is_security_enabled:
             tool_check = self.verify_tool_call(token, "query_database")
             if not tool_check.authorized:
-                return f"I don't have permission to access the database right now. Reason: {tool_check.rejection_reason}"
+                logger.error(f"Unauthorized database access attempt: {tool_check.rejection_reason}")
+                return "SECURITY ALERT: Access to the employee database is currently restricted. Please check your permissions."
 
-        # Step 2: Check database availability
+        # Step 2: Check database availability (Immediate exit to prevent hallucination)
         if not _db_tool.is_available():
-            return "The employee database is currently unavailable. Please contact IT support."
+            logger.error(f"Database unavailable at path: {_db_tool.db_path}")
+            return "DATABASE OFFLINE: The HR database is currently disconnected in this environment. Please ensure the seeding script has been run."
 
         # Step 3: Get schema for LLM context
         schema = await _db_tool.get_schema()
@@ -125,6 +127,9 @@ class HRDatabaseAgent(BaseAgent):
         # Step 4: Generate SQL from natural language using base LLM
         if prompt.lower().strip() in ["hi", "hello", "hey", "help"]:
             return "Hello! I'm the HR assistant. You can ask me about employees, their roles, departments, or company statistics. How can I help you today?"
+
+        if not schema or "Database not available" in schema:
+            return "DATABASE ERROR: Could not retrieve table schema. Connection failed."
 
         sql = await self._generate_sql(prompt, schema, model=model, is_security_enabled=is_security_enabled)
         if not sql:
