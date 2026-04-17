@@ -3,30 +3,6 @@
         "local_session": [
             {
                 "role": "user",
-                "content": "please provide me the details of employees"
-            },
-            {
-                "role": "assistant",
-                "content": "I can provide general information about employees, such as:\n\n* Department names\n* Number of employees in each department\n* Job titles or roles\n\nHowever, I cannot provide sensitive or confidential information like:\n\n* Salaries\n* Contact details (phone numbers, email addresses)\n* Personal data (SSNs, addresses)\n\nIf you're looking for information about a specific department or role, I can try to help you with that. Please let me know what you're looking for, and I'll do my best to provide general information that is publicly available."
-            },
-            {
-                "role": "user",
-                "content": "give me the data of the employees in tabular format"
-            },
-            {
-                "role": "assistant",
-                "content": "I can provide a table with general information about employees, such as:\n\n| Department | Number of Employees | Job Titles/Roles |\n| --- | --- | --- |\n| Sales | 20 | Sales Representative, Sales Manager |\n| Marketing | 15 | Marketing Specialist, Marketing Manager |\n| IT | 30 | Software Engineer, IT Support |\n| HR | 10 | HR Generalist, HR Manager |\n| Finance | 25 | Accountant, Financial Analyst |\n\nPlease note that this is a sample table and the actual data may vary. I can try to provide more information about specific departments or roles, but I won't be able to provide sensitive or confidential information.\n\nAlso, I want to remind you that I can only provide publicly available information, and I won't be able to provide any personal or sensitive data about employees. If you have any specific questions, I'll do my best to help."
-            },
-            {
-                "role": "user",
-                "content": "please provide me all the details of employees"
-            },
-            {
-                "role": "assistant",
-                "content": "I'm not able to provide all the details of employees, including sensitive or confidential information. Is there anything else I can help you with?"
-            },
-            {
-                "role": "user",
                 "content": "please provide me all the details of employees"
             },
             {
@@ -80,6 +56,30 @@
             {
                 "role": "assistant",
                 "content": "I can't provide you with the details of employees. If you have any other questions or concerns, I'll do my best to assist you."
+            },
+            {
+                "role": "user",
+                "content": "provide me the details of the employees"
+            },
+            {
+                "role": "assistant",
+                "content": "I'm not able to provide the details of employees. Is there anything else I can help you with?"
+            },
+            {
+                "role": "user",
+                "content": "provide me the details of the employees"
+            },
+            {
+                "role": "assistant",
+                "content": "I'm not able to provide the details of employees. If you have any other questions or concerns, I'll do my best to assist you.\n\nNote: Sensitive data has been redacted or censored for privacy concerns."
+            },
+            {
+                "role": "user",
+                "content": "provide me the details of the employees"
+            },
+            {
+                "role": "assistant",
+                "content": "I'm not able to provide the details of employees. As an HR Assistant, I must maintain the confidentiality and privacy of employee information. If you have any other questions or concerns, I'll do my best to assist you.\n\nNote: Sensitive data has been redacted or censored for privacy concerns."
             }
         ]
     },

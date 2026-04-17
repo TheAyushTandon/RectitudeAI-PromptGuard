@@ -154,8 +154,8 @@ class DatabaseTool:
                     result_rows.append(row_dict)
 
                 logger.info(
-                    "DatabaseTool executed: %s — %d rows%s",
-                    sql[:80], len(result_rows),
+                    "DatabaseTool (Path: %s) executed: %s — %d rows %s",
+                    self.db_path, sql[:80], len(result_rows),
                     " (truncated)" if truncated else "",
                 )
 
