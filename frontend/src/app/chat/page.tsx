@@ -35,7 +35,7 @@ export default function ChatPage() {
   const [activeTab, setActiveTab] = useState("chat");
 
   // Production-ready API Base
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:10000";
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:10000";
 
   const [currentModel, setCurrentModel] = useState<string>(() => {
     if (typeof window !== "undefined") {
